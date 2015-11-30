@@ -32,8 +32,8 @@ case class ClazzDefinition(
                   tags: Option[String],
                   isActive: Boolean,
                   amount: scala.math.BigDecimal,
-                  vat: scala.math.BigDecimal,
-                  currency: String,
+                  vat: Option[scala.math.BigDecimal],
+                  currency: Option[String],
                   idStudio: Option[UUID])
 
 

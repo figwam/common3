@@ -57,7 +57,7 @@ class ClazzDefinitionDAOImpl @Inject() (protected val dbConfigProvider: Database
     val now = new Timestamp(System.currentTimeMillis())
     val query =
       for {
-        clazz <- slickClazzDefinitions if clazz.activeFrom <= now if clazz.activeTill >= now
+        clazz <- slickClazzDefinitions if clazz.activeFrom <= now if clazz.activeTill >= now if clazz.isActive
       } yield (clazz)
     val result = db.run(query.result)
     result.map { clazz =>

@@ -14,3 +14,4 @@ logs/
 gymix.iml
 .cache-main
 .tern-project
+*.log
