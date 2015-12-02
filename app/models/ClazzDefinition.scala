@@ -1,11 +1,13 @@
 package models
 
-import java.util.{Calendar, UUID}
+import java.net.URL
+import java.util.{Date, Calendar, UUID}
 
 import models.Recurrence.Recurrence
-import models.Type.Type
+import play.api.libs.json.Reads._
 
 import play.api.libs.json._
+import play.api.libs.functional.syntax._
 
 object Recurrence extends Enumeration {
   type Recurrence = Value
@@ -19,22 +21,22 @@ object Type extends Enumeration {
 }
 
 case class ClazzDefinition(
-                  id: Option[UUID],
-                  startFrom: Calendar,
-                  endAt: Calendar,
-                  activeFrom: Calendar,
-                  activeTill: Calendar,
-                  recurrence: Recurrence,
-                  name: String,
-                  contingent: Short,
-                  avatarurl: Option[String] = None,
-                  description: String,
-                  tags: Option[String],
-                  isActive: Boolean,
-                  amount: scala.math.BigDecimal,
-                  vat: Option[scala.math.BigDecimal],
-                  currency: Option[String],
-                  idStudio: Option[UUID])
+                            id: Option[UUID],
+                            startFrom: Calendar,
+                            endAt: Calendar,
+                            activeFrom: Calendar,
+                            activeTill: Calendar,
+                            recurrence: Recurrence,
+                            name: String,
+                            contingent: Short,
+                            avatarurl: Option[URL] = None,
+                            description: String,
+                            tags: Option[String],
+                            isActive: Boolean,
+                            amount: scala.math.BigDecimal,
+                            vat: Option[scala.math.BigDecimal],
+                            currency: Option[String],
+                            idStudio: Option[UUID])
 
 
 /**
@@ -48,5 +50,9 @@ object ClazzDefinition {
    * Converts the [Clazz] object to Json and vice versa.
    */
   implicit val jsonFormat = Json.format[ClazzDefinition]
+  implicit val clazzDefReads = (
+      (__ \ 'name).read[String](minLength[String](1)) and
+      (__ \ 'description).read[String](minLength[String](1))
+    )
 
 }

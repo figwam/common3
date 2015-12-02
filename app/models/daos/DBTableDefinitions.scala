@@ -1,10 +1,12 @@
 package models.daos
 
+import java.net.URL
 import java.sql.Timestamp
 import java.util.UUID
 
 import com.mohiva.play.silhouette.api.LoginInfo
 import models._
+import play.Play
 import play.api.libs.json._
 import slick.driver.JdbcProfile
 import slick.lifted.ProvenShape.proveShapeOf
@@ -777,9 +779,10 @@ trait DBTableDefinitions {
     *
     */
 
+  val vat = BigDecimal(Play.application().configuration().getString("vat").toDouble)
+  val currency = Play.application().configuration().getString("currency")
 
-
-  def model2entity(address: Address): DBAddress =  DBAddress( None, address.street, address.zip, address.city, address.state, address.country, new Timestamp(System.currentTimeMillis), new Timestamp(System.currentTimeMillis), false, address.longitude, address.latitude)
+  def model2entity(address: Address): DBAddress =  DBAddress( address.id, address.street, address.zip, address.city, address.state, address.country, new Timestamp(System.currentTimeMillis), new Timestamp(System.currentTimeMillis), false, address.longitude, address.latitude)
   def entity2model(address: DBAddress): Address = Address( address.id, address.street, address.city, address.zip, address.state, address.country, address.longitude, address.latitude)
 
   def model2entity(loginInfo: LoginInfo): DBLoginInfo = DBLoginInfo(None, loginInfo.providerID, loginInfo.providerKey, new Timestamp(System.currentTimeMillis), new Timestamp(System.currentTimeMillis), None, new Timestamp(System.currentTimeMillis))
@@ -787,10 +790,14 @@ trait DBTableDefinitions {
   def model2entity(studio: Studio): DBStudio = DBStudio(id = studio.id, name = studio.name, createdOn = new Timestamp(System.currentTimeMillis), updatedOn = new Timestamp(System.currentTimeMillis), idAddress =  UUID.randomUUID(), idPartner =  UUID.randomUUID())
   def entity2model(studio: DBStudio, address: DBAddress): Studio = Studio(id = studio.id, name = studio.name, address = entity2model(address))
 
-  def model2entity(clazz: ClazzDefinition): DBClazzDefinition = DBClazzDefinition(None, asTimestamp(clazz.startFrom), asTimestamp(clazz.endAt), asTimestamp(clazz.activeFrom),asTimestamp(clazz.activeTill), clazz.name, clazz.recurrence+"", clazz.contingent, new Timestamp(System.currentTimeMillis), new Timestamp(System.currentTimeMillis),clazz.avatarurl,clazz.description,clazz.tags, None, clazz.idStudio.get, clazz.isActive, clazz.amount, clazz.vat.getOrElse(BigDecimal(0.08)*(clazz.amount)), clazz.currency.getOrElse("CHF"))
-  def entity2model(clazz: DBClazzDefinition): ClazzDefinition = ClazzDefinition(clazz.id, asCalendar(clazz.startFrom), asCalendar(clazz.endAt), asCalendar(clazz.activeFrom), asCalendar(clazz.activeTill), Recurrence.withName(clazz.recurrence), clazz.name, clazz.contingent, clazz.avatarurl, clazz.description, clazz.tags, clazz.isActive, clazz.amount, Some(clazz.vat), Some(clazz.currency), Some(clazz.idStudio))
+  def model2entity(clazz: ClazzDefinition): DBClazzDefinition = DBClazzDefinition(id=clazz.id, startFrom=asTimestamp(clazz.startFrom), endAt=asTimestamp(clazz.endAt), activeFrom=asTimestamp(clazz.activeFrom), activeTill=asTimestamp(clazz.activeTill), name=clazz.name, recurrence=clazz.recurrence+"", contingent=clazz.contingent, createdOn=new Timestamp(System.currentTimeMillis), updatedOn=new Timestamp(System.currentTimeMillis),avatarurl=clazz.avatarurl.map(_.toString),description=clazz.description,tags=clazz.tags, idStudio=clazz.idStudio.get, isActive=clazz.isActive, amount=clazz.amount, vat=clazz.vat.getOrElse(vat*(clazz.amount)), currency=clazz.currency.getOrElse(currency))
+  def entity2model(clazz: DBClazzDefinition): ClazzDefinition = ClazzDefinition(clazz.id, asCalendar(clazz.startFrom), asCalendar(clazz.endAt), asCalendar(clazz.activeFrom), asCalendar(clazz.activeTill), Recurrence.withName(clazz.recurrence), clazz.name, clazz.contingent, clazz.avatarurl.map(new URL(_)), clazz.description, clazz.tags, clazz.isActive, clazz.amount, Some(clazz.vat), Some(clazz.currency), Some(clazz.idStudio))
 
   def model2entity(partner: Partner): DBPartner = DBPartner( partner.id, partner.firstname, partner.lastname, partner.mobile, partner.phone, partner.email, false, new Timestamp(System.currentTimeMillis), new Timestamp(System.currentTimeMillis), partner.ptoken, false, None, true, partner.inactiveReason, UUID.randomUUID(), partner.username, partner.fullname, partner.avatarurl, partner.revenue.getOrElse(BigDecimal(0)))
   def entity2model(partner: DBPartner, loginInfo: DBLoginInfo, address: DBAddress, studio: DBStudio, addressStudio: DBAddress): Partner = Partner(partner.id, LoginInfo(loginInfo.providerId, loginInfo.providerKey), partner.firstname, partner.lastname, partner.mobile, partner.phone, partner.email, partner.emailVerified, asCalendar(partner.createdOn), asCalendar(partner.updatedOn), partner.ptoken, partner.isActive, partner.inactiveReason, partner.username, partner.fullname, partner.avatarurl, Some(partner.revenue), entity2model(address), entity2model(studio, addressStudio) )
+
+  def model2entity(clazz: Clazz, idClazzDef: UUID): DBClazz = DBClazz(None, asTimestamp(clazz.startFrom), asTimestamp(clazz.endAt), new Timestamp(System.currentTimeMillis), new Timestamp(System.currentTimeMillis), idClazzDef)
+  def entity2model(clazz: DBClazzView, studio: DBStudio, addressStudio: DBAddress, idReg: Option[UUID] = None): Clazz = Clazz(clazz.id, asCalendar(clazz.startFrom), asCalendar(clazz.endAt), clazz.name, clazz.contingent, clazz.avatarurl.map(new URL(_)), clazz.description, clazz.tags, clazz.registrations, clazz.searchMeta, clazz.idClazzDef, clazz.idStudio, idReg, Some(entity2model(studio, addressStudio)))
+
 
 }

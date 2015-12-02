@@ -1,5 +1,6 @@
 package models
 
+import java.net.URL
 import java.util.{GregorianCalendar, Calendar, UUID}
 
 import play.api.libs.json._
@@ -11,7 +12,7 @@ case class Clazz(
                   endAt: Calendar,
                   name: String,
                   contingent: Short,
-                  avatarurl: Option[String],
+                  avatarurl: Option[URL],
                   description: String,
                   tags: Option[String],
                   registrations: Short = 0,

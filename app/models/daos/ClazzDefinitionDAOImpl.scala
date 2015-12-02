@@ -15,7 +15,13 @@ import utils.Utils._
 
 trait ClazzDefinitionDAO extends DAOSlick {
 
+  def retrieve(id: UUID): Future[Option[ClazzDefinition]]
+
+
   def create(clazz: ClazzDefinition): Future[ClazzDefinition]
+
+  def update (clazz: ClazzDefinition): Future[ClazzDefinition]
+
   //  def update(id: Long, clazz: ClazzDefinition): Future[Int]
   //  def delete(id: Long): Future[Int]
   def listActive(): Future[Seq[ClazzDefinition]]
@@ -49,7 +55,22 @@ class ClazzDefinitionDAOImpl @Inject() (protected val dbConfigProvider: Database
   override def create(clazz: ClazzDefinition): Future[ClazzDefinition] = {
     val insertQuery = slickClazzDefinitions.returning(slickClazzDefinitions.map(_.id)).into((clazzDB, id) => clazzDB.copy(id = id))
     val action = insertQuery += model2entity(clazz)
-    db.run(action).map(_ => clazz)
+    db.run(action).map(clazzDB => entity2model(clazzDB))
+  }
+
+  override def retrieve(id: UUID): Future[Option[ClazzDefinition]] = {
+    db.run(slickClazzDefinitions.filter(_.id === id).result.headOption).map(o => o.map(c => entity2model(c)))
+  }
+
+
+  override def update(cl: ClazzDefinition): Future[ClazzDefinition] = {
+    val q = for {c <- slickClazzDefinitions if c.id === cl.id} yield
+      (c.startFrom, c.endAt, c.activeFrom, c.activeTill,
+        c.name, c.recurrence, c.contingent, c.updatedOn,
+        c.avatarurl, c.description, c.tags, c.isActive, c.amount)
+    db.run(q.update(asTimestamp(cl.startFrom), asTimestamp(cl.endAt), asTimestamp(cl.activeFrom), asTimestamp(cl.activeTill),
+      cl.name, cl.recurrence+"", cl.contingent, new Timestamp(System.currentTimeMillis()),
+      cl.avatarurl.map(_.toString()), cl.description, Some(cl.tags.getOrElse("")+""), cl.isActive, cl.amount)).map(_ => cl)
   }
 
 

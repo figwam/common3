@@ -1,7 +1,8 @@
 package utils
 
+import java.net.{MalformedURLException, URL}
 import java.sql.Timestamp
-import java.text.SimpleDateFormat
+import java.text.{ParseException, SimpleDateFormat}
 import java.util
 import java.util.{GregorianCalendar, Calendar}
 
@@ -25,10 +26,14 @@ object Utils {
     implicit object calendarFormat extends Format[Calendar] {
       val format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SS'Z'")
       def reads(json: JsValue) = {
-        val str = json.as[String]
-        val gc = new GregorianCalendar
-        gc.setTimeInMillis(format.parse(str).getTime)
-        JsSuccess(gc)
+        try {
+          val str = json.as[String]
+          val gc = new GregorianCalendar
+          gc.setTimeInMillis(format.parse(str).getTime)
+          JsSuccess(gc)
+        } catch {
+          case e:ParseException => JsError(e.getMessage)
+        }
       }
       def writes(c: Calendar) = JsString(format.format(c.getTime))
     }
@@ -39,17 +44,39 @@ object Utils {
       //val format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SS'Z'")
       val format: DateTimeFormatter = ISODateTimeFormat.dateTime().withZone(DateTimeZone.getDefault())
       def reads(json: JsValue) = {
-        val str = json.as[String]
-        JsSuccess(new DateTime(format.parseDateTime(str)))
+        try {
+          val str = json.as[String]
+          JsSuccess(new DateTime(format.parseDateTime(str)))
+        } catch {
+          case e:IllegalArgumentException => JsError(e.getMessage)
+        }
       }
       def writes(c: DateTime) = JsString(format.print(c))
     }
 
 
+
+    implicit object urlFormat extends Format[URL] {
+      def reads(json: JsValue) = {
+        try {
+          val str = json.as[String]
+          JsSuccess(new URL(str))
+        } catch {
+          case e: MalformedURLException => JsError(e.getMessage)
+        }
+      }
+      def writes(c: URL) = JsString(c.toString)
+    }
+
+
     implicit object recurrenceFormat extends Format[Recurrence] {
       def reads(json: JsValue) = {
-        val str = json.as[String]
-        JsSuccess(Recurrence.withName(str))
+        try {
+          val str = json.as[String]
+          JsSuccess(Recurrence.withName(str))
+        } catch {
+          case e:NoSuchElementException => JsError("invalid recurrence")
+        }
       }
       def writes(r: Recurrence) = JsString(r+"")
     }
@@ -57,8 +84,12 @@ object Utils {
 
     implicit object typeFormat extends Format[Type] {
       def reads(json: JsValue) = {
-        val str = json.as[String]
-        JsSuccess(Type.withName(str))
+        try {
+          val str = json.as[String]
+          JsSuccess(Type.withName(str))
+        } catch {
+          case e:NoSuchElementException => JsError("invalid type")
+        }
       }
       def writes(r: Type) = JsString(r+"")
     }

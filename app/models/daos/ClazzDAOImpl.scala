@@ -79,8 +79,7 @@ class ClazzDAOImpl @Inject() (protected val dbConfigProvider: DatabaseConfigProv
 
 
   override def insert(clazz: Clazz, idClazzDef: UUID): Future[Clazz] = {
-    db.run(slickClazzes += DBClazz(None, asTimestamp(clazz.startFrom), asTimestamp(clazz.endAt), new Timestamp(System.currentTimeMillis), new Timestamp(System.currentTimeMillis), idClazzDef))
-      .map(_ => clazz)
+    db.run(slickClazzes += model2entity(clazz, idClazzDef)).map(_ => clazz)
   }
 
   override def list(page: Int = 0, pageSize: Int = 10, orderBy: Int = 1, filter: String = "%"): Future[Page] = {
@@ -97,19 +96,7 @@ class ClazzDAOImpl @Inject() (protected val dbConfigProvider: DatabaseConfigProv
       clazz.map {
         // go through all the DBClazzes and map them to Clazz
         case (clazz, studio, addressS)  => {
-          //Logger.info(clazzDef.name+"("+clazz.id+")-->"+registrations._2)
-          Clazz(clazz.id, asCalendar(clazz.startFrom), asCalendar(clazz.endAt), clazz.name, clazz.contingent, clazz.avatarurl, clazz.description, clazz.tags, clazz.registrations, clazz.searchMeta, clazz.idClazzDef, clazz.idStudio, None,
-            Some(Studio(
-              id=studio.id,
-              name=studio.name,
-              address=Address(
-                addressS.id,
-                addressS.street,
-                addressS.city,
-                addressS.zip,
-                addressS.state,
-                addressS.country)
-            )))
+          entity2model(clazz, studio, addressS)
         }
       } // The result is Seq[Clazz] flapMap (works with Clazz) these to Page
     }.flatMap (c3 => totalRows.map (rows => Page(c3, page, offset.toLong, rows.toLong)))
@@ -158,18 +145,7 @@ class ClazzDAOImpl @Inject() (protected val dbConfigProvider: DatabaseConfigProv
         // go through all the DBClazzes and map them to Clazz
         case (clazz, registration, studio, addressS) => {
           val idReg: Option[UUID] = registration.flatMap{reg => reg match {case DBRegistration(_,_,_,_) => reg.id case _ => None} }
-          Clazz(clazz.id, asCalendar(clazz.startFrom), asCalendar(clazz.endAt), clazz.name, clazz.contingent, clazz.avatarurl, clazz.description, clazz.tags, clazz.registrations, clazz.searchMeta, clazz.idClazzDef, clazz.idStudio, idReg,
-            Some(Studio(
-              id=studio.id,
-              name=studio.name,
-              address=Address(
-                addressS.id,
-                addressS.street,
-                addressS.city,
-                addressS.zip,
-                addressS.state,
-                addressS.country)
-            )))
+          entity2model(clazz, studio, addressS, idReg)
         }
       } // The result is Seq[Clazz] flapMap (works with Clazz) these to Page
     }.flatMap (c3 => totalRows.map (rows => Page(c3, page, offset.toLong, rows.toLong)))
@@ -186,7 +162,9 @@ class ClazzDAOImpl @Inject() (protected val dbConfigProvider: DatabaseConfigProv
         .filter(_.startFrom >= startFrom)
         .filter(_.endAt <= endAt)
         .filter(_.searchMeta.toLowerCase like filter.toLowerCase) if clazzView.id === registration.idClazz
-    } yield (clazzView, registration)).drop(offset).take(pageSize)
+      s <- slickStudios.filter(_.id === clazzView.idStudio)
+      a <- slickAddresses.filter(_.id === s.idAddress)
+    } yield (clazzView, registration, s, a)).drop(offset).take(pageSize)
     val totalRows = countMy(filter, idTrainee, startFrom, endAt)
 
 
@@ -194,8 +172,8 @@ class ClazzDAOImpl @Inject() (protected val dbConfigProvider: DatabaseConfigProv
     result.map { clazz =>
       clazz.map {
         // go through all the DBClazzes and map them to Clazz
-        case (clazz, registration) => {
-          Clazz(clazz.id, asCalendar(clazz.startFrom), asCalendar(clazz.endAt), clazz.name, clazz.contingent, clazz.avatarurl, clazz.description, clazz.tags, clazz.registrations, clazz.searchMeta, clazz.idClazzDef, clazz.idStudio, registration.id)
+        case (clazz, registration, studio, addressS) => {
+          entity2model(clazz, studio, addressS, registration.id)
         }
       } // The result is Seq[Clazz] flapMap (works with Clazz) these to Page
     }.flatMap (c3 => totalRows.map (rows => Page(c3, page, offset.toLong, rows.toLong)))
