@@ -778,8 +778,7 @@ trait DBTableDefinitions {
     *
     *
     */
-
-  val vat = BigDecimal(Play.application().configuration().getString("vat").toDouble)
+  val vat = BigDecimal(Play.application().configuration().getDouble("vat"))
   val currency = Play.application().configuration().getString("currency")
 
   def model2entity(address: Address): DBAddress =  DBAddress( address.id, address.street, address.zip, address.city, address.state, address.country, new Timestamp(System.currentTimeMillis), new Timestamp(System.currentTimeMillis), false, address.longitude, address.latitude)

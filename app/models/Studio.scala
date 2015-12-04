@@ -1,5 +1,6 @@
 package models
 
+import java.net.URL
 import java.util.UUID
 
 import play.api.libs.json.Json
@@ -11,7 +12,7 @@ case class Studio(
                    mobile: Option[String] = None,
                    phone: Option[String] = None,
                    email: Option[String] = None,
-                   avatarurl: Option[String] = None,
+                   avatarurl: Option[URL] = None,
                    description: Option[String] = None,
                    sporttype: Option[String] = None,
                    address: Address)

@@ -1,11 +1,13 @@
 package models.daos
 
 import java.sql.Timestamp
+import java.util.UUID
 import javax.inject.Inject
 
 
 import models._
 import play.api.db.slick.DatabaseConfigProvider
+import utils.Utils._
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -13,7 +15,11 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 trait AddressDAO extends DBTableDefinitions {
 
-  def update(address: Address): Future[Address]
+  def create(obj: Address): Future[Address]
+  def retrieve(id: UUID): Future[Option[Address]]
+  def update (objIn: Address): Future[Address]
+  def delete(id: UUID): Future[Int]
+
   def insert(address: Address): Future[Address]
 
 }
@@ -22,6 +28,28 @@ class AddressDAOImpl @Inject() (protected val dbConfigProvider: DatabaseConfigPr
   extends AddressDAO with DAOSlick {
 
   import driver.api._
+
+  override def create(obj: Address): Future[Address] = {
+    val insertQuery = slickAddresses.returning(slickAddresses.map(_.id)).into((objDB, id) => objDB.copy(id = id))
+    val action = insertQuery += model2entity(obj)
+    db.run(action).map(objDB => entity2model(objDB))
+  }
+
+  override def retrieve(id: UUID): Future[Option[Address]] = {
+    db.run(slickAddresses.filter(_.id === id).result.headOption).map(obj => obj.map(o => entity2model(o)))
+  }
+
+
+  override def update(objIn: Address): Future[Address] = {
+    val q = for {obj <- slickAddresses if obj.id === objIn.id} yield
+      (obj.street, obj.zip, obj.city, obj.state, obj.country,
+        obj.updatedOn, obj.longitude, obj.latitude)
+    db.run(q.update(objIn.street, objIn.zip, objIn.city, objIn.state, objIn.country,
+      new Timestamp(System.currentTimeMillis()), objIn.longitude, objIn.latitude)).map(_ => objIn)
+  }
+
+
+  override def delete(id: UUID): Future[Int] = db.run(slickAddresses.filter(_.id === id).delete)
 
 
   override def insert(address: Address): Future[Address] = {
@@ -38,13 +66,6 @@ class AddressDAOImpl @Inject() (protected val dbConfigProvider: DatabaseConfigPr
       } yield address
     }
     db.run(addressAction).map(_ => address)
-  }
-
-
-  override def update(address: Address): Future[Address] = {
-    val q = for {a <- slickAddresses if a.id === address.id}yield (a.street, a.city, a.zip, a.updatedOn)
-    val updateAction = q.update(address.street, address.city, address.zip, new Timestamp(System.currentTimeMillis))
-    db.run(updateAction).map(_ => address)
   }
 
 }

@@ -13,7 +13,8 @@ case class Address(
                     state: String,
                     country: String,
                     longitude: Option[scala.math.BigDecimal] = None,
-                    latitude: Option[scala.math.BigDecimal] = None)
+                    latitude: Option[scala.math.BigDecimal] = None
+                  )
 
 /**
  * The companion object.

@@ -15,12 +15,12 @@ import utils.Utils._
 
 trait ClazzDefinitionDAO extends DAOSlick {
 
-  def retrieve(id: UUID): Future[Option[ClazzDefinition]]
 
 
   def create(clazz: ClazzDefinition): Future[ClazzDefinition]
-
+  def retrieve(id: UUID): Future[Option[ClazzDefinition]]
   def update (clazz: ClazzDefinition): Future[ClazzDefinition]
+  def delete(id: UUID): Future[Int]
 
   //  def update(id: Long, clazz: ClazzDefinition): Future[Int]
   //  def delete(id: Long): Future[Int]
@@ -72,6 +72,9 @@ class ClazzDefinitionDAOImpl @Inject() (protected val dbConfigProvider: Database
       cl.name, cl.recurrence+"", cl.contingent, new Timestamp(System.currentTimeMillis()),
       cl.avatarurl.map(_.toString()), cl.description, Some(cl.tags.getOrElse("")+""), cl.isActive, cl.amount)).map(_ => cl)
   }
+
+
+  override def delete(id: UUID): Future[Int] = db.run(slickClazzDefinitions.filter(_.id === id).delete)
 
 
   override def listActive(): Future[Seq[ClazzDefinition]] = {
