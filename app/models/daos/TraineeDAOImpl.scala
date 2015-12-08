@@ -16,38 +16,18 @@ import utils.Utils._
 /**
   * Give access to the trainee object.
   */
-trait TraineeDAO {
+trait TraineeDAO extends UserService with DAOSlick {
 
-  /**
-    * Finds a trainee by its login info.
-    *
-    * @param loginInfo The login info of the trainee to find.
-    * @return The found trainee or None if no trainee for the given login info could be found.
-    */
-  def find(loginInfo: LoginInfo): Future[Option[Trainee]]
-
-  /**
-    * Saves a trainee.
-    *
-    * @param trainee The trainee to save.
-    * @return The saved trainee.
-    */
-  def save(trainee: Trainee): Future[Trainee]
-
-  /**
-    * Updates a trainee.
-    *
-    * @param trainee The trainee to update.
-    * @return The updated trainee.
-    */
-  def update(trainee: Trainee): Future[Trainee]
+  def retrieve(id: UUID): Future[Option[Trainee]]
+  def update (objIn: Trainee): Future[Trainee]
+  def delete(id: UUID): Future[Int]
 }
 
 /**
  * Give access to the trainee object using Slick
  */
 class TraineeDAOImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
-  extends TraineeDAO with DAOSlick {
+  extends TraineeDAO {
 
   import driver.api._
 
@@ -57,40 +37,15 @@ class TraineeDAOImpl @Inject()(protected val dbConfigProvider: DatabaseConfigPro
    * @param loginInfo The login info of the trainee to find.
    * @return The found trainee or None if no trainee for the given login info could be found.
    */
-  def find(loginInfo: LoginInfo): Future[Option[Trainee]] = {
+  override def retrieve(loginInfo: LoginInfo): Future[Option[User]] = {
     val query = for {
       dbLoginInfo <- loginInfoQuery(loginInfo)
       dbTraineeLoginInfo <- slickTraineeLoginInfos.filter(_.idLoginInfo === dbLoginInfo.id)
       dbTrainee <- slickTrainees.filter(_.id === dbTraineeLoginInfo.idTrainee)
-      dbAddress <- slickAddresses.filter(_.id === dbTrainee.idAddress)
-    } yield (dbTrainee, dbLoginInfo, dbAddress)
+    } yield (dbTrainee, dbLoginInfo)
     db.run(query.result.headOption).map { resultOption =>
       resultOption.map {
-        case (trainee, loginInfo, address) =>
-          Trainee(trainee.id,
-            LoginInfo(loginInfo.providerId, loginInfo.providerKey),
-            trainee.firstname,
-            trainee.lastname,
-            trainee.mobile,
-            trainee.phone,
-            trainee.email,
-            trainee.emailVerified,
-            trainee.createdOn,
-            trainee.updatedOn,
-            trainee.ptoken,
-            trainee.isActive,
-            trainee.inactiveReason,
-            trainee.username,
-            trainee.fullname,
-            trainee.avatarurl,
-            Address(
-              address.id,
-              address.street,
-              address.city,
-              address.zip,
-              address.state,
-              address.country)
-          )
+        case (trainee, loginInfo) => entity2model(trainee)
       }
     }
   }
@@ -98,53 +53,24 @@ class TraineeDAOImpl @Inject()(protected val dbConfigProvider: DatabaseConfigPro
   /**
    * Saves a trainee.
    *
-   * @param trainee The trainee to save.
+   * @param user The user to save.
    * @return The saved trainee.
    */
-  def save(trainee: Trainee) = {
-    val dbTrainee = DBTrainee(
-      trainee.id,
-      trainee.firstname,
-      trainee.lastname,
-      trainee.mobile,
-      trainee.phone,
-      trainee.email,
-      false,
-      new Timestamp(System.currentTimeMillis),
-      new Timestamp(System.currentTimeMillis),
-      trainee.ptoken,
-      false,
-      None,
-      true,
-      trainee.inactiveReason,
-      UUID.randomUUID(), // Will be set later
-      trainee.username,
-      trainee.fullname,
-      trainee.avatarurl)
+  override def signUp(user: User, loginInfo: LoginInfo, address: Address): Future[User] = {
 
-    val dbAddress = DBAddress(
-      None,
-      trainee.address.street,
-      trainee.address.zip,
-      trainee.address.city,
-      trainee.address.state,
-      trainee.address.country,
-      new Timestamp(System.currentTimeMillis),
-      new Timestamp(System.currentTimeMillis), false, None, None)
-
-    val dbLoginInfo = DBLoginInfo(None,
-      trainee.loginInfo.providerID,
-      trainee.loginInfo.providerKey,
-      new Timestamp(System.currentTimeMillis),
-      new Timestamp(System.currentTimeMillis),
-      None,
-      new Timestamp(System.currentTimeMillis))
+    val trainee:Trainee = user match {
+      case u: Trainee => u
+      case _ => throw new ClassCastException
+    }
+    val dbTrainee = model2entity(trainee)
+    val dbAddress = model2entity(address)
+    val dbLoginInfo = model2entity(loginInfo)
 
     // We don't have the address id so we try to get it first.
     // If there is no Address yet for this trainee we retrieve the id on insertion.
     val addressAction = {
       val retrieveAddress = slickAddresses.filter(
-        address => address.id === trainee.address.id).result.headOption
+        a => a.id === address.id).result.headOption
       val insertAddress = slickAddresses.returning(slickAddresses.map(_.id)).
         into((address, id) => address.copy(id = id)) += dbAddress
       for {
@@ -157,7 +83,7 @@ class TraineeDAOImpl @Inject()(protected val dbConfigProvider: DatabaseConfigPro
     // If there is no LoginInfo yet for this trainee we retrieve the id on insertion.
     val loginInfoAction = {
       val retrieveLoginInfo = slickLoginInfos.filter(
-        info => info.providerId === trainee.loginInfo.providerID && info.providerKey === trainee.loginInfo.providerKey).result.headOption
+        info => info.providerId === loginInfo.providerID && info.providerKey === loginInfo.providerKey).result.headOption
       val insertLoginInfo = slickLoginInfos.returning(slickLoginInfos.map(_.id)).
         into((info, id) => info.copy(id = id)) += dbLoginInfo
       for {
@@ -186,12 +112,23 @@ class TraineeDAOImpl @Inject()(protected val dbConfigProvider: DatabaseConfigPro
     * @return The updated trainee.
     */
   def update(trainee: Trainee): Future[Trainee] = {
-    val qT = for {t <- slickTrainees if t.id === trainee.id} yield (t.firstname, t.lastname, t.mobile, t.phone, t.updatedOn)
-    val qA = for {a <- slickAddresses if a.id === trainee.address.id} yield (a.street, a.city, a.zip, a.updatedOn)
-    val actions = (for {
-      updateT <- qT.update(trainee.firstname, trainee.lastname, trainee.mobile, trainee.phone, new Timestamp(System.currentTimeMillis))
-      updateA <- qA.update(trainee.address.street, trainee.address.city, trainee.address.zip, new Timestamp(System.currentTimeMillis))
-    } yield ()).transactionally
-    db.run(actions).map(_ => trainee)
+    val q = for {t <- slickTrainees if t.id === trainee.id} yield (
+      t.firstname, t.lastname, t.mobile, t.phone, t.updatedOn)
+    db.run(q.update(trainee.firstname, trainee.lastname, trainee.mobile, trainee.phone, new Timestamp(System.currentTimeMillis))).map(_ => trainee)
   }
+
+  override def retrieve(id: UUID): Future[Option[Trainee]] = {
+    val query = for {
+      dbTrainee <- slickTrainees.filter(_.id === id)
+      dbTraineeLoginInfo <- slickTraineeLoginInfos.filter(_.idTrainee === dbTrainee.id)
+      dbLoginInfo <- slickLoginInfos.filter(_.id === dbTraineeLoginInfo.idLoginInfo)
+    } yield (dbTrainee, dbLoginInfo)
+    db.run(query.result.headOption).map { resultOption =>
+      resultOption.map {
+        case (trainee, loginInfo) => entity2model(trainee)
+      }
+    }
+  }
+
+  override def delete(id: UUID): Future[Int] = ???
 }

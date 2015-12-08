@@ -7,7 +7,7 @@ import play.api.libs.json.Json
 
 
 case class Studio(
-                   id: Option[UUID],
+                   id: Option[UUID] = None,
                    name: String,
                    mobile: Option[String] = None,
                    phone: Option[String] = None,
@@ -15,7 +15,8 @@ case class Studio(
                    avatarurl: Option[URL] = None,
                    description: Option[String] = None,
                    sporttype: Option[String] = None,
-                   address: Address)
+                   idAddress: Option[UUID] = None,
+                   idPartner: Option[UUID] = None)
 
 /**
  * The companion object.

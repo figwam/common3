@@ -18,6 +18,16 @@ object FormValidator {
       )(ClazzDef.apply _)
   }
 
+
+  case class Studio(name: String, description: String)
+
+  object Studio {
+    implicit val clazzDefReads = (
+      (__ \ 'name).read[String](minLength[String](1)) and
+        (__ \ 'description).read[String](minLength[String](1))
+      )(Studio.apply _)
+  }
+
   case class Address(street: String,
                      city: String,
                      zip: String,
@@ -30,5 +40,17 @@ object FormValidator {
         (__ \ 'zip).read[String](verifying[String](_.matches("\\d{4,4}"))) and
         (__ \ 'state).read[String]
       )(Address.apply _)
+  }
+
+
+  case class User(
+                   firstname: String,
+                   lastname: String)
+
+  object User {
+    implicit val userReads = (
+      (__ \ 'firstname).read[String](minLength[String](1)) and
+        (__ \ 'lastname).read[String](minLength[String](1))
+      )(User.apply _)
   }
 }

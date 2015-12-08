@@ -1,6 +1,6 @@
 package models
 
-import java.util.{Calendar, UUID}
+import java.util.{GregorianCalendar, Calendar, UUID}
 
 import com.mohiva.play.silhouette.api.{Identity, LoginInfo}
 
@@ -10,25 +10,23 @@ import play.api.libs.json._
 
 
 case class Partner(
-                    id: Option[UUID],
-                    loginInfo: LoginInfo,
-                    firstname: Option[String],
-                    lastname: Option[String],
-                    mobile: Option[String] = None,
-                    phone: Option[String] = None,
-                    email: Option[String] = None,
-                    emailVerified: Boolean = false,
-                    createdOn: Calendar,
-                    updatedOn: Calendar,
-                    ptoken: Option[String] = None,
-                    isActive: Boolean = true,
-                    inactiveReason: Option[String] = None,
-                    username: Option[String] = None,
-                    fullname: Option[String] = None,
-                    avatarurl: Option[String] = None,
-                    revenue: Option[BigDecimal] = None,
-                    address: Address,
-                    studio: Studio) extends Identity
+                    override val id: Option[UUID] = None,
+                    override val firstname: Option[String] = None,
+                    override val lastname: Option[String] = None,
+                    override val mobile: Option[String] = None,
+                    override val phone: Option[String] = None,
+                    override val email: Option[String] = None,
+                    override val emailVerified: Option[Boolean] = None,
+                    override val createdOn: Option[Calendar] = None,
+                    override val updatedOn: Option[Calendar] = None,
+                    override val ptoken: Option[String] = None,
+                    override val isActive: Option[Boolean] = None,
+                    override val inactiveReason: Option[String] = None,
+                    override val username: Option[String] = None,
+                    override val fullname: Option[String] = None,
+                    override val avatarurl: Option[String] = None,
+                    override val idAddress: Option[UUID] = None,
+                    revenue: Option[BigDecimal] = None) extends User
 
 
 /**

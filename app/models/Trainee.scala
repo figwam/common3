@@ -1,49 +1,34 @@
 package models
 
-import java.util.UUID
+import java.util.{Calendar, UUID}
 
-import com.mohiva.play.silhouette.api.{Identity, LoginInfo}
-
-import java.sql.Timestamp
-import java.text.SimpleDateFormat
 import play.api.libs.json._
 
 
 case class Trainee(
-                    id: Option[UUID],
-                    loginInfo: LoginInfo,
-                    firstname: Option[String],
-                    lastname: Option[String],
-                    mobile: Option[String] = None,
-                    phone: Option[String] = None,
-                    email: Option[String] = None,
-                    emailVerified: Boolean = false,
-                    createdOn: java.sql.Timestamp,
-                    updatedOn: java.sql.Timestamp,
-                    ptoken: Option[String] = None,
-                    isActive: Boolean = true,
-                    inactiveReason: Option[String] = None,
-                    username: Option[String] = None,
-                    fullname: Option[String] = None,
-                    avatarurl: Option[String] = None,
-                    address: Address) extends Identity
+                    override val id: Option[UUID] = None,
+                    override val firstname: Option[String] = None,
+                    override val lastname: Option[String] = None,
+                    override val mobile: Option[String] = None,
+                    override val phone: Option[String] = None,
+                    override val email: Option[String] = None,
+                    override val emailVerified: Option[Boolean] = None,
+                    override val createdOn: Option[Calendar] = None,
+                    override val updatedOn: Option[Calendar] = None,
+                    override val ptoken: Option[String] = None,
+                    override val isActive: Option[Boolean] = None,
+                    override val inactiveReason: Option[String] = None,
+                    override val username: Option[String] = None,
+                    override val fullname: Option[String] = None,
+                    override val avatarurl: Option[String] = None,
+                    override val idAddress: Option[UUID] = None) extends User
 
 
 /**
  * The companion object.
  */
 object Trainee {
-
-  implicit object timestampFormat extends Format[Timestamp] {
-    val format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SS'Z'")
-
-    def reads(json: JsValue) = {
-      val str = json.as[String]
-      JsSuccess(new Timestamp(format.parse(str).getTime))
-    }
-
-    def writes(ts: Timestamp) = JsString(format.format(ts))
-  }
+  import utils.Utils.Implicits._
 
   /**
    * Converts the [Trainee] object to Json and vice versa.
