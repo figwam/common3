@@ -24,6 +24,8 @@ libraryDependencies ++= Seq(
   "com.typesafe.play" %% "play-slick" % "1.0.1",
   "com.typesafe.play" %% "play-slick-evolutions" % "1.0.1",
   "org.postgresql" % "postgresql" % "9.4-1202-jdbc42",
+  "com.typesafe.play" %% "play-mailer" % "3.0.1",
+  "com.sendgrid" % "sendgrid-java" % "2.2.1",
   cache,
   evolutions,
   filters

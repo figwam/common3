@@ -1,8 +1,15 @@
 package models
 
+import java.sql.Timestamp
 import java.util.UUID
+import javax.inject.Inject
 
+import models.daos.DAOSlick
+import play.api.db.slick.DatabaseConfigProvider
 import play.api.libs.json._
+
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 
 case class Registration(
@@ -10,14 +17,33 @@ case class Registration(
                          idTrainee: UUID,
                          idClazz: UUID)
 
-
-/**
- * The companion object.
- */
 object Registration {
-
-  /**
-   * Converts the [Clazz] object to Json and vice versa.
-   */
   implicit val jsonFormat = Json.format[Registration]
+}
+
+trait RegistrationService {
+
+  def countByTrainee(idTrainee:UUID): Future[Int]
+
+  def save(registration: Registration): Future[Registration]
+
+  def delete(idRegistration: UUID): Future[Int]
+}
+
+class RegistrationServiceImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
+  extends RegistrationService with DAOSlick {
+
+  import driver.api._
+
+  def countByTrainee(idTrainee:UUID): Future[Int] = db.run(slickRegistrations.filter(_.idTrainee === idTrainee).length.result)
+
+  def save(registration: Registration): Future[Registration] = {
+    db.run(slickRegistrations += DBRegistration(None, new Timestamp(System.currentTimeMillis()), registration.idTrainee, registration.idClazz))
+      .map(_ => registration)
+  }
+
+  def delete(idRegistration: UUID): Future[Int] = {
+    db.run(slickRegistrations.filter(_.id === idRegistration).delete)
+  }
+
 }

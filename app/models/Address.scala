@@ -8,8 +8,8 @@ import models.daos.{DAOSlick, DBTableDefinitions}
 import play.api.db.slick.DatabaseConfigProvider
 import play.api.libs.json.Json
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 
 case class Address(
@@ -36,14 +36,28 @@ object Address {
 
 trait AddressService extends DBTableDefinitions {
 
+  // CRUD Addresses in general
   def create(obj: Address): Future[Address]
   def retrieve(id: UUID): Future[Option[Address]]
   def update (objIn: Address): Future[Address]
   def delete(id: UUID): Future[Int]
+  def retrieveByOwner(id: UUID, owner: UUID): Future[Option[Address]]
+
+  /*
+  def retrieve(id: UUID, uid: UUID): Future[Option[Address]]
+  def update(objIn: Address, uid: UUID): Future[Address]
+  */
 
 }
 
-class AddressServiceImpl @Inject() (protected val dbConfigProvider: DatabaseConfigProvider)
+
+
+/**
+  * General implementation of the Address ressource. It does not check if the address belongs to user or not.
+  *
+  * @param dbConfigProvider
+  */
+abstract class AddressServiceImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
   extends AddressService with DAOSlick {
 
   import driver.api._

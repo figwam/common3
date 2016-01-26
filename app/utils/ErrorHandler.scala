@@ -14,12 +14,12 @@ import akka.actor.{ActorSystem}
 import scala.concurrent._
 
 class ErrorHandler @Inject() (
-    env: Environment,
-    config: Configuration,
-    sourceMapper: OptionalSourceMapper,
-    router: Provider[Router],
-    system: ActorSystem
-  ) extends DefaultHttpErrorHandler(env, config, sourceMapper, router) {
+                               env: Environment,
+                               config: Configuration,
+                               sourceMapper: OptionalSourceMapper,
+                               router: Provider[Router],
+                               system: ActorSystem
+                             ) extends DefaultHttpErrorHandler(env, config, sourceMapper, router) {
 
   def getStackTraceAsString(t: Throwable) = {
     val sw = new StringWriter

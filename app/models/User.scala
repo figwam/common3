@@ -32,11 +32,3 @@ trait UserService extends IdentityService[User] {
   def retrieve(loginInfo: LoginInfo): Future[Option[User]]
   def signUp(user: User, loginInfo: LoginInfo, address: Address): Future[User]
 }
-
-/*
-class UserServiceImpl extends UserService {
-  override def retrieve(loginInfo: LoginInfo): Future[Option[User]] = ???
-
-  override def signUp(user: User, address: Address, studio: Studio, addressStudio: Address): Future[User] = ???
-}
-*/

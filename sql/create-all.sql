@@ -452,7 +452,8 @@ CREATE TABLE public.login_info(
 	last_used timestamp NOT NULL DEFAULT NOW(),
 	expiration timestamp NOT NULL DEFAULT NOW(),
 	fingerprint text,
-	created_on timestamp NOT NULL DEFAULT NOW()
+	created_on timestamp NOT NULL DEFAULT NOW(),
+	id_user_deleted uuid
 ); 
 
 -- DROP INDEX IF EXISTS public.idx_login_info_provider_key CASCADE;
@@ -462,6 +463,8 @@ USING btree
 	provider_id,
 	provider_key
 )	WITH (FILLFACTOR = 90);
+
+CREATE INDEX idx_idTraineeDeleted ON public.login_info USING btree (id_user_deleted);
 
 --  88888888888              d8b                                 888                   d8b          d8b           .d888
 --      888                  Y8P                                 888                   Y8P          Y8P          d88P"

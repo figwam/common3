@@ -1,12 +1,10 @@
 package controllers
 
-import java.util.UUID
 import javax.inject.{Inject, Singleton}
 
-import com.mohiva.play.silhouette.api.{Environment, Silhouette}
+import com.mohiva.play.silhouette.api.{LogoutEvent, Environment, Silhouette}
 import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
 import models._
-import models.daos._
 import play.api.Logger
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.libs.json.{JsError, JsSuccess, Json}
@@ -20,7 +18,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class TraineeController @Inject()(
                                    val messagesApi: MessagesApi,
                                    val env: Environment[User, JWTAuthenticator],
-                                   service: TraineeDAO)
+                                   service: TraineeService)
   extends Silhouette[User, JWTAuthenticator] {
 
   def retrieve = SecuredAction.async { implicit request =>
@@ -53,11 +51,14 @@ class TraineeController @Inject()(
 
   def delete = SecuredAction.async { implicit request =>
     service.delete(request.identity.id.get).flatMap { r => r match {
-      case 0 => Future.successful(NotFound(Json.obj("message" -> Messages("trainee.not.found"))))
-      case 1 => Future.successful(Ok(Json.obj("message" -> Messages("trainee.not.found"))))
-      case _ => Logger.error("WTH?!? We expect NO or exactly one unique result here")
-        Future.successful(InternalServerError);
-    }
+        case 0 => Future.successful(NotFound(Json.obj("message" -> Messages("trainee.not.found"))))
+        case 1 => {
+          env.eventBus.publish(LogoutEvent(request.identity, request, request2Messages))
+          env.authenticatorService.discard(request.authenticator, Ok)
+        }
+        case _ => Logger.error("WTH?!? We expect NO or exactly one unique result here")
+          Future.successful(InternalServerError);
+      }
     }
   }
 

@@ -8,7 +8,6 @@ import com.mohiva.play.silhouette.api.{Environment, Silhouette}
 import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import models._
-import models.daos._
 import play.api.Logger
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.libs.json._
@@ -29,7 +28,7 @@ class ClazzDefinitionController @Inject()(
                                        val messagesApi: MessagesApi,
                                        val env: Environment[User, JWTAuthenticator],
                                        socialProviderRegistry: SocialProviderRegistry,
-                                       dao: ClazzDefinitionDAO)
+                                       service: ClazzDefinitionService)
   extends Silhouette[User, JWTAuthenticator] {
 
 
@@ -46,7 +45,7 @@ class ClazzDefinitionController @Inject()(
             case Recurrence.onetime => clazzDef.copy(activeTill = clazzDef.endAt)
           }
 
-          dao.create(clazzDefCopy).flatMap {
+          service.create(clazzDefCopy).flatMap {
             case c:ClazzDefinition =>
               Future.successful(Created(Json.obj("message" -> Messages("save.ok")))
                 .withHeaders(("Location",request.path+"/"+c.id.get.toString())))
@@ -77,7 +76,7 @@ class ClazzDefinitionController @Inject()(
             case Recurrence.onetime => clazzDef.copy(activeTill = clazzDef.endAt)
           }
 
-          dao.update(clazzDefCopy).flatMap {
+          service.update(clazzDefCopy).flatMap {
             case c:ClazzDefinition =>
               Future.successful(Ok(Json.obj("message" -> Messages("save.ok"))))
             case _ =>
@@ -92,13 +91,13 @@ class ClazzDefinitionController @Inject()(
   }
 
   def retrieve(id: UUID) = SecuredAction.async { implicit request =>
-    dao.retrieve(id).flatMap { o =>
+    service.retrieve(id).flatMap { o =>
       o.fold(Future.successful(NotFound(Json.obj("message" -> Messages("clazzdef.not.found")))))(c => Future.successful(Ok(Json.toJson(c))))
     }
   }
 
   def delete(id: UUID) = SecuredAction.async { implicit request =>
-    dao.delete(id).flatMap { r => r match {
+    service.delete(id).flatMap { r => r match {
         case 0 => Future.successful(NotFound(Json.obj("message" -> Messages("clazzdef.not.found"))))
         case 1 => Future.successful(Ok(Json.obj("message" -> Messages("clazzdef.not.found"))))
         case _ => Logger.error("WTH?!? Whe expect NO or exactly one unique result here")
@@ -108,7 +107,7 @@ class ClazzDefinitionController @Inject()(
   }
 
   def listByPartner(page: Int, orderBy: Int, filter: String) = SecuredAction.async { implicit request =>
-    dao.listByPartner(page, 10, orderBy, request.identity.id.getOrElse(UUID.randomUUID())).flatMap { pageClazzes =>
+    service.listByPartner(page, 10, orderBy, request.identity.id.getOrElse(UUID.randomUUID())).flatMap { pageClazzes =>
       Future.successful(Ok(Json.toJson(pageClazzes)))
     }.recover {
       case ex: TimeoutException =>

@@ -41,7 +41,7 @@ class RegistrationController @Inject()(
   def create() = SecuredAction.async(parse.json) { implicit request =>
     (request.body \ "idClazz").asOpt[String].map { idClazz =>
       registrationDAO.save(Registration(None, request.identity.id.get, UUID.fromString(idClazz))).flatMap { ret =>
-        Future.successful(Ok)
+        Future.successful(Created)
       }.recover {
         case ex: TimeoutException =>
           Logger.error("Problem create registration for clazz "+idClazz, ex)

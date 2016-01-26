@@ -304,7 +304,7 @@ trait DBTableDefinitions {
     val registrations: Rep[Short] = column[Short]("nr_of_regs")
     val idClazzDef: Rep[UUID] = column[UUID]("id_clazzdef")
     val idStudio: Rep[UUID] = column[UUID]("id_studio")
-    val idTrainee: Rep[Option[UUID]] = column[Option[UUID]]("id_registration")
+    val idTrainee: Rep[Option[UUID]] = column[Option[UUID]]("id_trainee")
     val idRegistration: Rep[Option[UUID]] = column[Option[UUID]]("id_registration")
   }
 
@@ -315,11 +315,12 @@ trait DBTableDefinitions {
     lastUsed: java.sql.Timestamp,
     expiration: java.sql.Timestamp,
     fingerprint: Option[String] = None,
-    createdOn: java.sql.Timestamp)
+    createdOn: java.sql.Timestamp,
+    idUserDeleted: Option[UUID])
 
 
   class LoginInfos(_tableTag: Tag) extends Table[DBLoginInfo](_tableTag, "login_info") {
-    def * = (id, providerId, providerKey, lastUsed, expiration, fingerprint, createdOn) <> (DBLoginInfo.tupled, DBLoginInfo.unapply)
+    def * = (id, providerId, providerKey, lastUsed, expiration, fingerprint, createdOn, idUserDeleted) <> (DBLoginInfo.tupled, DBLoginInfo.unapply)
     val id: Rep[Option[UUID]] = column[Option[UUID]]("id", O.PrimaryKey, O.AutoInc)
     val providerId: Rep[String] = column[String]("provider_id")
     val providerKey: Rep[String] = column[String]("provider_key")
@@ -327,7 +328,9 @@ trait DBTableDefinitions {
     val expiration: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("expiration")
     val fingerprint: Rep[Option[String]] = column[Option[String]]("fingerprint", O.Default(None))
     val createdOn: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("created_on")
+    val idUserDeleted: Rep[Option[UUID]] = column[Option[UUID]]("id_user_deleted")
     val index1 = index("idx_login_info_provider_key", (providerId, providerKey))
+    val index2 = index("idx_id_trainee_deleted", (idUserDeleted))
   }
 
 
@@ -784,7 +787,7 @@ trait DBTableDefinitions {
   def model2entity(address: Address): DBAddress =  DBAddress( address.id, address.street, address.zip, address.city, address.state, address.country, new Timestamp(System.currentTimeMillis), new Timestamp(System.currentTimeMillis), false, address.longitude, address.latitude)
   def entity2model(address: DBAddress): Address = Address( address.id, address.street, address.city, address.zip, address.state, address.country, address.longitude, address.latitude)
 
-  def model2entity(loginInfo: LoginInfo): DBLoginInfo = DBLoginInfo(None, loginInfo.providerID, loginInfo.providerKey, new Timestamp(System.currentTimeMillis), new Timestamp(System.currentTimeMillis), None, new Timestamp(System.currentTimeMillis))
+  def model2entity(loginInfo: LoginInfo): DBLoginInfo = DBLoginInfo(None, loginInfo.providerID, loginInfo.providerKey, new Timestamp(System.currentTimeMillis), new Timestamp(System.currentTimeMillis), None, new Timestamp(System.currentTimeMillis), None)
 
   def model2entity(studio: Studio): DBStudio = DBStudio(id = studio.id, name = studio.name, createdOn = new Timestamp(System.currentTimeMillis), updatedOn = new Timestamp(System.currentTimeMillis), idAddress =  UUID.randomUUID(), idPartner =  UUID.randomUUID())
   def entity2model(studio: DBStudio): Studio = Studio(id = studio.id, name = studio.name, idAddress = Some(studio.idAddress), idPartner = Some(studio.idPartner))

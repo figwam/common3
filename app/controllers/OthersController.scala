@@ -6,7 +6,7 @@ import com.mohiva.play.silhouette.api.{Environment, LogoutEvent, Silhouette}
 import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import models._
-import models.daos.{ClazzDAO, OfferDAO, PartnerDAO}
+import models.daos.{ClazzDAO, OfferDAO}
 import play.Play
 import play.api.Play.current
 import play.api.cache.Cache
@@ -30,7 +30,6 @@ class OthersController @Inject()(
                                        val env: Environment[User, JWTAuthenticator],
                                        socialProviderRegistry: SocialProviderRegistry,
                                        clazzDAO: ClazzDAO,
-                                       partnerDAO: PartnerDAO,
                                        offerDAO: OfferDAO)
   extends Silhouette[User, JWTAuthenticator] {
 

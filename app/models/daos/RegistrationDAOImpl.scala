@@ -16,9 +16,7 @@ import utils.Utils.asCalendar
 trait RegistrationDAO {
 
   def countByTrainee(idTrainee:UUID): Future[Int]
-
   def save(registration: Registration): Future[Registration]
-
   def delete(idRegistration: UUID): Future[Int]
 }
 
