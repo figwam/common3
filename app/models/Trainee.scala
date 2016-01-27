@@ -168,4 +168,5 @@ class TraineeServiceImpl @Inject()(protected val dbConfigProvider: DatabaseConfi
 
     db.run(q).map(_ => 1)
   }
+
 }

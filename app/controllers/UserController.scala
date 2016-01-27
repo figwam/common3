@@ -2,14 +2,14 @@ package controllers
 
 import javax.inject.{Inject, Singleton}
 
-import com.mohiva.play.silhouette.api.{Environment, LogoutEvent, Silhouette}
+import com.mohiva.play.silhouette.api.{Environment, _}
 import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import models._
-import play.api.i18n.{MessagesApi}
-import play.api.libs.json.{Json, _}
+import play.api.i18n.MessagesApi
+import play.api.libs.json._
 
-import scala.concurrent.{Future}
+import scala.concurrent.Future
 
 /**
  * The basic application controller.

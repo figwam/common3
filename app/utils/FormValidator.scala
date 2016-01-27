@@ -34,12 +34,42 @@ object FormValidator {
                      state: String)
 
   object Address {
-    implicit val dataReads = (
-        (__ \ 'street).read[String](minLength[String](1)) and
+    implicit val addressReads = (
+      (__ \ 'street).read[String](minLength[String](1)) and
         (__ \ 'city).read[String](minLength[String](1)) and
         (__ \ 'zip).read[String](verifying[String](_.matches("\\d{4,4}"))) and
         (__ \ 'state).read[String]
       )(Address.apply _)
+  }
+
+
+
+  case class Email(email: String, etype: String)
+
+  object Email {
+    implicit val emailReads = (
+      (__ \ 'email).read[String](email) and
+        (__ \ 'type).read[String]
+      )(Email.apply _)
+  }
+
+  case class PasswordChange(current: String, password1: String, password2: String)
+
+  object PasswordChange {
+    implicit val passwordChangeReads = (
+      (__ \ 'current).read[String](minLength[String](4)) and
+        (__ \ 'password1).read[String](minLength[String](4))and
+        (__ \ 'password2).read[String](minLength[String](4))
+      )(PasswordChange.apply _)
+  }
+
+  case class PasswordReset(password1: String, password2: String)
+
+  object PasswordReset {
+    implicit val passwordResetReads = (
+        (__ \ 'password1).read[String](minLength[String](4))and
+        (__ \ 'password2).read[String](minLength[String](4))
+      )(PasswordReset.apply _)
   }
 
 

@@ -32,8 +32,9 @@ class MailServiceDefault @Inject() (mailerClient: MailerClient) extends MailServ
 
 class MailServiceSendgrid extends MailService {
 
-  lazy val from = Play.application().configuration().getString("play.mailer.from")
-  lazy val sgKey = Play.application().configuration().getString("play.mailer.sendgrid.key")
+  lazy val from = Play.application().configuration().getString("sendgrid.from")
+  lazy val sgKey = Play.application().configuration().getString("sendgrid.key")
+  lazy val mock: Boolean = Play.application().configuration().getString("sendgrid.mock").toBoolean
 
   def sendEmailAsync(recipients: String*)(subject: String, bodyHtml: String, bodyText: String) = {
     Akka.system.scheduler.scheduleOnce(100 milliseconds) {
@@ -48,6 +49,6 @@ class MailServiceSendgrid extends MailService {
     email.setFrom(from)
     email.setSubject(subject)
     email.setHtml(bodyHtml)
-    sg.send(email)
+    if (!mock) sg.send(email) else Logger.debug("The confirmation email:"+email.getHtml)
   }
 }
