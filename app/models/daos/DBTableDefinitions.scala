@@ -252,12 +252,13 @@ trait DBTableDefinitions {
                       tags: Option[String],
                       searchMeta: String,
                       registrations: Short,
+                      amount: scala.math.BigDecimal,
                       idClazzDef: UUID,
                       idStudio: UUID
                       )
 
   class ClazzViews(_tableTag: Tag) extends Table[DBClazzView](_tableTag, "clazz_view") {
-    def * = (id, startFrom, endAt, name, contingent, avatarurl,description, tags, searchMeta, registrations, idClazzDef, idStudio) <>(DBClazzView.tupled, DBClazzView.unapply)
+    def * = (id, startFrom, endAt, name, contingent, avatarurl,description, tags, searchMeta, registrations, amount, idClazzDef, idStudio) <>(DBClazzView.tupled, DBClazzView.unapply)
     val id: Rep[Option[UUID]] = column[Option[UUID]]("id", O.PrimaryKey, O.AutoInc)
     val startFrom: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("start_from")
     val endAt: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("end_at")
@@ -268,6 +269,7 @@ trait DBTableDefinitions {
     val tags: Rep[Option[String]] = column[Option[String]]("tags", O.Default(None))
     val searchMeta: Rep[String] = column[String]("search_meta")
     val registrations: Rep[Short] = column[Short]("nr_of_regs")
+    val amount: Rep[scala.math.BigDecimal] = column[scala.math.BigDecimal]("amount")
     val idClazzDef: Rep[UUID] = column[UUID]("id_clazzdef")
     val idStudio: Rep[UUID] = column[UUID]("id_studio")
   }
@@ -802,7 +804,7 @@ trait DBTableDefinitions {
   def entity2model(o: DBTrainee): Trainee = Trainee(o.id, o.firstname, o.lastname, o.mobile, o.phone, o.email, Some(o.emailVerified), Some(asCalendar(o.createdOn)), Some(asCalendar(o.updatedOn)), o.ptoken, Some(o.isActive), o.inactiveReason, o.username, o.fullname, o.avatarurl, Some(o.idAddress))
 
   def model2entity(clazz: Clazz): DBClazz = DBClazz(None, asTimestamp(clazz.startFrom), asTimestamp(clazz.endAt), new Timestamp(System.currentTimeMillis), new Timestamp(System.currentTimeMillis), clazz.idClazzDef)
-  def entity2model(clazz: DBClazzView, studio: DBStudio, addressStudio: DBAddress, idReg: Option[UUID] = None): Clazz = Clazz(clazz.id, asCalendar(clazz.startFrom), asCalendar(clazz.endAt), clazz.name, clazz.contingent, clazz.avatarurl.map(new URL(_)), clazz.description, clazz.tags, clazz.registrations, clazz.searchMeta, clazz.idClazzDef, clazz.idStudio, idReg)
+  def entity2model(clazz: DBClazzView, studio: DBStudio, addressStudio: DBAddress, idReg: Option[UUID] = None): Clazz = Clazz(clazz.id, asCalendar(clazz.startFrom), asCalendar(clazz.endAt), clazz.name, clazz.contingent, clazz.avatarurl.map(new URL(_)), clazz.description, clazz.tags, clazz.registrations, clazz.searchMeta, clazz.amount, clazz.idClazzDef, clazz.idStudio, idReg)
 
 
 }

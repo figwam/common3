@@ -8,6 +8,8 @@ resolvers := ("Atlassian Releases" at "https://maven.atlassian.com/public/") +: 
 
 resolvers += "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases"
 
+resolvers += "sonatype snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
+
 resolvers += Resolver.sonatypeRepo("snapshots")
 
 libraryDependencies ++= Seq(
@@ -26,6 +28,7 @@ libraryDependencies ++= Seq(
   "org.postgresql" % "postgresql" % "9.4-1202-jdbc42",
   "com.typesafe.play" %% "play-mailer" % "3.0.1",
   "com.sendgrid" % "sendgrid-java" % "2.2.1",
+  "com.cloudinary" % "cloudinary-http44" % "1.2.2",
   cache,
   evolutions,
   filters

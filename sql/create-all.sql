@@ -762,7 +762,7 @@ CREATE VIEW clazz_view AS
 					 '{',adrS.zip,'},',
            '{',cd.description,'},',
            '{',cd.tags,'}') as search_meta, nr_of_regs,
-    cd.id AS id_clazzdef, s.id AS id_studio
+    cd.amount, cd.id AS id_clazzdef, s.id AS id_studio
   from (
          select c.id, c.start_from, c.end_at,
            c.created_on, c.updated_on, c.id_clazzdef,

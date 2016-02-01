@@ -86,4 +86,16 @@ object FormValidator {
         (__ \ 'lastname).read[String](minLength[String](1))
       )(User.apply _)
   }
+
+
+  case class Image(
+                   file: String,
+                   ftype: String)
+
+  object Image {
+    implicit val reads = (
+      (__ \ 'file).read[String](minLength[String](1)) and
+        (__ \ 'type).read[String](minLength[String](1))
+      )(Image.apply _)
+  }
 }

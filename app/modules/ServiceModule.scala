@@ -29,5 +29,6 @@ class ServiceModule extends AbstractModule with ScalaModule {
     bind[BillDAO].to[BillDAOImpl]
     bind[MailTokenService[MailTokenUser]].to[MailTokenServiceImpl]
     bind[MailService].to[MailServiceSendgrid]
+    bind[ImageService].to[ImageServiceCloudinary]
   }
 }

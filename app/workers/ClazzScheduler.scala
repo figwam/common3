@@ -8,6 +8,7 @@ import models.{ClazzService, ClazzDefinitionService, Clazz}
 import org.postgresql.util.PSQLException
 import play.api.Logger
 import play.libs.Json
+import scala.concurrent.duration._
 
 import utils._
 
@@ -17,8 +18,9 @@ import scala.concurrent.ExecutionContext.Implicits.global
 /**
  * Created by alex on 27/09/15.
  */
-@Singleton
-class ClazzScheduler @Inject()(cService: ClazzService, cdService: ClazzDefinitionService)  extends Actor {
+class ClazzScheduler @Inject()(cService: ClazzService, cdService: ClazzDefinitionService) extends Actor {
+
+
 
   private val CREATE_CLAZZES = "CREATE_CLAZZES"
 
@@ -60,7 +62,7 @@ class ClazzScheduler @Inject()(cService: ClazzService, cdService: ClazzDefinitio
                       future.onSuccess { case a => Logger.debug(s"Class created: $a") }
                       future.onFailure {
                         case t: PSQLException => {
-                          if (t.getMessage.contains("duplicate key value violates unique constraint")) Logger.info("Class already exists")
+                          if (t.getMessage.contains("duplicate key value violates unique constraint")) Logger.debug("Class already exists")
                           else Logger.error("Something bad happened", t)
                         }
                         case t: Throwable => Logger.error(t.getMessage,t)

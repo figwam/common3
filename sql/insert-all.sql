@@ -116,7 +116,7 @@ BEGIN
       RETURNING id
     ), cld01 AS (
       INSERT INTO clazz_definition (id_studio, active_from, active_till, start_from, end_at, name, recurrence,  contingent, avatarurl, description, amount, vat, currency)
-      SELECT id, partner.active_from,partner.active_till,partner.start_from,partner.end_at,partner.clazzdef_name,partner.recurrence,partner.contingent,partner.clazz_def_avatarurl, partner.clazzdef_description, "10","0.8", "CHF"
+      SELECT id, partner.active_from,partner.active_till,partner.start_from,partner.end_at,partner.clazzdef_name,partner.recurrence,partner.contingent,partner.clazz_def_avatarurl, partner.clazzdef_description, 10,0.8, 'CHF'
       FROM stu01
       RETURNING id
     ),lin01 AS (
@@ -173,8 +173,8 @@ BEGIN
 
   FOR i IN 1..10 LOOP
     SELECT * INTO partner FROM temp WHERE id = ((i % nr_of_partners)+1);
-    INSERT INTO clazz_definition (id_studio, active_from, active_till, start_from, end_at, name, recurrence,  contingent, avatarurl, description)
-    VALUES (sid, partner.active_from,partner.active_till,partner.start_from,partner.end_at,partner.clazzdef_name,partner.recurrence,partner.contingent,partner.clazz_def_avatarurl, partner.clazzdef_description);
+    INSERT INTO clazz_definition (id_studio, active_from, active_till, start_from, end_at, name, recurrence,  contingent, avatarurl, description, amount, vat, currency)
+    VALUES (sid, partner.active_from,partner.active_till,partner.start_from,partner.end_at,partner.clazzdef_name,partner.recurrence,partner.contingent,partner.clazz_def_avatarurl, partner.clazzdef_description, 10, 0.8, 'CHF');
   END LOOP;
 
 END;

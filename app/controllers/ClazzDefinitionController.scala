@@ -4,6 +4,8 @@ import java.util.UUID
 import java.util.concurrent.TimeoutException
 import javax.inject.{Inject, Singleton}
 
+import akka.actor.{Props, ActorRef, ActorSystem}
+import com.google.inject.name.Named
 import com.mohiva.play.silhouette.api.{Environment, Silhouette}
 import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
@@ -12,6 +14,7 @@ import play.api.Logger
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.libs.json._
 import play.api.mvc.Result
+import workers.ClazzScheduler
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -30,8 +33,10 @@ class ClazzDefinitionController @Inject()(
                                        val env: Environment[User, JWTAuthenticator],
                                        socialProviderRegistry: SocialProviderRegistry,
                                        service: ClazzDefinitionService,
+                                       clazzService: ClazzService,
                                        aService: AddressService,
-                                       sService: StudioService)
+                                       sService: StudioService,
+                                       @Named("ClazzScheduler") clazzActor: ActorRef)
   extends Silhouette[User, JWTAuthenticator] {
 
 
@@ -60,6 +65,11 @@ class ClazzDefinitionController @Inject()(
           Future.successful(InternalServerError);
       }
     }
+  }
+
+  def calculateNextClazzes = SecuredAction.async {
+    clazzActor ! "CREATE_CLAZZES"
+    Future.successful(Ok("OK"))
   }
 
   def listByPartner(page: Int, orderBy: Int, filter: String) = SecuredAction.async { implicit request =>

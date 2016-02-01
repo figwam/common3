@@ -25,6 +25,7 @@ case class Clazz(
                   tags: Option[String],
                   registrations: Short = 0,
                   searchMeta: String,
+                  amount: scala.math.BigDecimal,
                   idClazzDef: UUID,
                   idStudio: UUID,
                   idRegistration: Option[UUID])
@@ -116,17 +117,28 @@ class ClazzServiceImpl @Inject() (protected val dbConfigProvider: DatabaseConfig
     db.run(slickClazzes.filter(_.startFrom >= new Timestamp(System.currentTimeMillis())).length.result)
 
 
-  override def list(page: Int = 0, pageSize: Int = 10, orderBy: Int = 1, filter: String = "%"): Future[Page] = {
+  override def list(page: Int = 0, pageSize: Int = 10, sortBy: Int = 1, filter: String = "%"): Future[Page] = {
     val offset = if (page > 0) pageSize * page else 0
-    val clazzAction = (for {
-      clazz <- slickClazzViews.sortBy(r => orderBy match {case 1 => r.startFrom case _ => r.startFrom}) if clazz.startFrom >= new Timestamp(System.currentTimeMillis()) if clazz.searchMeta.toLowerCase like filter.toLowerCase
-      s <- slickStudios.filter(_.id === clazz.idStudio)
+
+    val clazzAction = for {
+      c <- slickClazzViews
+        .filter(_.startFrom >= new Timestamp(System.currentTimeMillis()))
+        .filter(_.searchMeta.toLowerCase like filter.toLowerCase)
+      s <- slickStudios.filter(_.id === c.idStudio)
       a <- slickAddresses.filter(_.id === s.idAddress)
-    } yield (clazz, s, a)).drop(offset).take(pageSize)
+    } yield (c, s, a)
+
+    def sorted = sortBy match {
+      case 1 => clazzAction.sortBy( r => r._1.startFrom)
+      case -1 => clazzAction.sortBy( r => r._1.startFrom.desc)
+      case 2 => clazzAction.sortBy( r => r._1.name)
+      case -2 => clazzAction.sortBy( r => r._1.name.desc)
+      case _ => clazzAction.sortBy( r => r._1.startFrom)
+    }
+
     val totalRows = count(filter)
 
-    val result = db.run(clazzAction.result)
-    result.map { clazz => //result is Seq[DBClazz]
+    db.run(sorted.drop(offset).take(pageSize).result).map { clazz => //result is Seq[DBClazz]
       clazz.map {
         // go through all the DBClazzes and map them to Clazz
         case (clazz, studio, addressS)  => {
