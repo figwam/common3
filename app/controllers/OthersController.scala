@@ -6,7 +6,6 @@ import com.mohiva.play.silhouette.api.{Environment, LogoutEvent, Silhouette}
 import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import models._
-import models.daos.{ClazzDAO, OfferDAO}
 import play.Play
 import play.api.Play.current
 import play.api.cache.Cache
@@ -29,8 +28,8 @@ class OthersController @Inject()(
                                        val messagesApi: MessagesApi,
                                        val env: Environment[User, JWTAuthenticator],
                                        socialProviderRegistry: SocialProviderRegistry,
-                                       clazzDAO: ClazzDAO,
-                                       offerDAO: OfferDAO)
+                                       cService: ClazzService,
+                                       oService: OfferService)
   extends Silhouette[User, JWTAuthenticator] {
 
 
@@ -69,7 +68,7 @@ class OthersController @Inject()(
   def offers = UserAwareAction.async { implicit request =>
     lazy val cacheExpire = Play.application().configuration().getString("cache.expire.get.offers").toInt
     val offers:List[Offer] = Cache.getAs[List[Offer]]("offers").getOrElse{
-      val offers:List[Offer] = Await.result(offerDAO.list(), 5.seconds)
+      val offers:List[Offer] = Await.result(oService.retrieve, 5.seconds)
       Cache.set("offers", offers, cacheExpire.seconds)
       offers
     }

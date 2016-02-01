@@ -17,16 +17,16 @@ class ServiceModule extends AbstractModule with ScalaModule {
    * Configures the module.
    */
   def configure() {
-    bind[ClazzDAO].to[ClazzDAOImpl]
     bind[TraineeService].to[TraineeServiceImpl]
     bind[PartnerService].to[PartnerServiceImpl]
     bind[ClazzDefinitionService].to[ClazzDefinitionServiceImpl]
-    bind[OfferDAO].to[OfferDAOImpl]
+    bind[ClazzService].to[ClazzServiceImpl]
+    bind[OfferService].to[OfferServiceImpl]
+    bind[StudioService].to[StudioServiceImpl]
     bind[RegistrationDAO].to[RegistrationDAOImpl]
     bind[LoggerDAO].to[LoggerDAOImpl]
     bind[SubscriptionDAO].to[SubscriptionDAOImpl]
     bind[BillDAO].to[BillDAOImpl]
-    bind[StudioDAO].to[StudioDAOImpl]
     bind[MailTokenService[MailTokenUser]].to[MailTokenServiceImpl]
     bind[MailService].to[MailServiceSendgrid]
   }

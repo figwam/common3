@@ -11,6 +11,7 @@ import models._
 import play.api.Logger
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.libs.json._
+import play.api.mvc.Result
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -28,78 +29,33 @@ class ClazzDefinitionController @Inject()(
                                        val messagesApi: MessagesApi,
                                        val env: Environment[User, JWTAuthenticator],
                                        socialProviderRegistry: SocialProviderRegistry,
-                                       service: ClazzDefinitionService)
+                                       service: ClazzDefinitionService,
+                                       aService: AddressService,
+                                       sService: StudioService)
   extends Silhouette[User, JWTAuthenticator] {
 
 
-  def create() = SecuredAction.async(parse.json) { implicit request =>
-    request.body.validate[FormValidator.ClazzDef] match {
-      case error: JsError => {
-        Future.successful(BadRequest(Json.obj("message" -> Messages("save.fail"), "detail" -> JsError.toJson(error))))
-      }
-      case s: JsSuccess[FormValidator.ClazzDef] => {
-        request.body.validate[ClazzDefinition].map { clazzDef =>
-
-          // In case of onetime set the activTill to class endDate, so it will be automatically historized
-          val clazzDefCopy = clazzDef.recurrence match {
-            case Recurrence.onetime => clazzDef.copy(activeTill = clazzDef.endAt)
-          }
-
-          service.create(clazzDefCopy).flatMap {
-            case c:ClazzDefinition =>
-              Future.successful(Created(Json.obj("message" -> Messages("save.ok")))
-                .withHeaders(("Location",request.path+"/"+c.id.get.toString())))
-            case _ =>
-              Future.successful(BadRequest(Json.obj("message" -> Messages("save.fail"))))
-          }
-        }.recoverTotal {
-          case error =>
-            Future.successful(BadRequest(Json.obj("message" -> "invalid.data", "detail" -> JsError.toJson(error))))
-        }
-      }
-    }
+  def create = SecuredAction.async(parse.json) { implicit request =>
+    validateUpsert(None, service.create)
   }
 
-
-
-
-  def update(id: UUID) = SecuredAction.async(parse.json) { implicit request =>
-    request.body.validate[FormValidator.ClazzDef] match {
-      case error: JsError => {
-        Future.successful(BadRequest(Json.obj("message" -> Messages("save.fail"), "detail" -> JsError.toJson(error))))
-      }
-      case s: JsSuccess[FormValidator.ClazzDef] => {
-        request.body.validate[ClazzDefinition].map { clazzDef =>
-
-          // In case of onetime set the activTill to class endDate, so it will be automatically historized
-          val clazzDefCopy = clazzDef.recurrence match {
-            case Recurrence.onetime => clazzDef.copy(activeTill = clazzDef.endAt)
-          }
-
-          service.update(clazzDefCopy).flatMap {
-            case c:ClazzDefinition =>
-              Future.successful(Ok(Json.obj("message" -> Messages("save.ok"))))
-            case _ =>
-              Future.successful(BadRequest(Json.obj("message" -> Messages("save.fail"))))
-          }
-        }.recoverTotal {
-          case error =>
-            Future.successful(BadRequest(Json.obj("message" -> "invalid.data", "detail" -> JsError.toJson(error))))
-        }
-      }
-    }
-  }
 
   def retrieve(id: UUID) = SecuredAction.async { implicit request =>
     service.retrieve(id).flatMap { o =>
-      o.fold(Future.successful(NotFound(Json.obj("message" -> Messages("clazzdef.not.found")))))(c => Future.successful(Ok(Json.toJson(c))))
+      o.fold(Future.successful(NotFound(Json.obj("message" -> Messages("object.not.found")))))(c => Future.successful(Ok(Json.toJson(c))))
+    }
+  }
+
+  def update(id: UUID) = SecuredAction.async(parse.json) { implicit request =>
+    validateUpsert(Some(id), service.update).flatMap{ _ =>
+      Future.successful(Ok(Json.obj("message" -> Messages("save.ok"))))
     }
   }
 
   def delete(id: UUID) = SecuredAction.async { implicit request =>
     service.delete(id).flatMap { r => r match {
-        case 0 => Future.successful(NotFound(Json.obj("message" -> Messages("clazzdef.not.found"))))
-        case 1 => Future.successful(Ok(Json.obj("message" -> Messages("clazzdef.not.found"))))
+        case 0 => Future.successful(NotFound(Json.obj("message" -> Messages("object.not.found"))))
+        case 1 => Future.successful(Ok(Json.obj("message" -> Messages("object.not.found"))))
         case _ => Logger.error("WTH?!? Whe expect NO or exactly one unique result here")
           Future.successful(InternalServerError);
       }
@@ -113,6 +69,36 @@ class ClazzDefinitionController @Inject()(
       case ex: TimeoutException =>
         Logger.error("Problem found in clazz list process")
         InternalServerError(ex.getMessage)
+    }
+  }
+
+
+
+  protected def validateUpsert(id: Option[UUID], dbAction: ClazzDefinition => Future[ClazzDefinition])(implicit request: SecuredRequest[JsValue]): Future[Result] = {
+    request.body.validate[FormValidator.ClazzDef] match {
+      case error: JsError => {
+        Future.successful(BadRequest(Json.obj("message" -> Messages("save.fail"), "detail" -> JsError.toJson(error))))
+      }
+      case s: JsSuccess[FormValidator.ClazzDef] => {
+        request.body.validate[ClazzDefinition].map { obj =>
+          sService.retrieve(request.identity.id.get).flatMap { s => s match {
+            case Some(s) =>
+              dbAction(obj.copy(id=id, idStudio = s.id)).flatMap {
+                case o: ClazzDefinition =>
+                  Future.successful(Created(Json.obj("message" -> Messages("save.ok")))
+                    .withHeaders(("Location",request.path+"/"+o.id.get)))
+                case _ =>
+                  logger.error("Updating or Creating Object failed")
+                  Future.successful(InternalServerError(Json.obj("message" -> Messages("save.fail"))))
+              }
+            case None => Future.successful(NotFound(Json.obj("message" -> Messages("object.not.found"))))
+            }
+          }
+        }.recoverTotal {
+          case error =>
+            Future.successful(BadRequest(Json.obj("message" -> "invalid.data", "detail" -> JsError.toJson(error))))
+        }
+      }
     }
   }
 

@@ -9,24 +9,7 @@ import Reads._
  */
 object FormValidator {
 
-  case class ClazzDef(name: String, description: String)
 
-  object ClazzDef {
-    implicit val clazzDefReads = (
-      (__ \ 'name).read[String](minLength[String](1)) and
-        (__ \ 'description).read[String](minLength[String](1))
-      )(ClazzDef.apply _)
-  }
-
-
-  case class Studio(name: String, description: String)
-
-  object Studio {
-    implicit val clazzDefReads = (
-      (__ \ 'name).read[String](minLength[String](1)) and
-        (__ \ 'description).read[String](minLength[String](1))
-      )(Studio.apply _)
-  }
 
   case class Address(street: String,
                      city: String,
@@ -40,6 +23,26 @@ object FormValidator {
         (__ \ 'zip).read[String](verifying[String](_.matches("\\d{4,4}"))) and
         (__ \ 'state).read[String]
       )(Address.apply _)
+  }
+
+  case class ClazzDef(name: String, description: String)
+
+  object ClazzDef {
+    implicit val clazzDefReads = (
+      (__ \ 'name).read[String](minLength[String](1)) and
+        (__ \ 'description).read[String](minLength[String](1))
+      )(ClazzDef.apply _)
+  }
+
+
+  case class Studio(name: String, description: String, address: Address)
+
+  object Studio {
+    implicit val studioReads = (
+      (__ \ 'name).read[String](minLength[String](1)) and
+        (__ \ 'description).read[String](minLength[String](1)) and
+          (__ \ 'address).read[Address]
+      )(Studio.apply _)
   }
 
 

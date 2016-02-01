@@ -69,7 +69,7 @@ USING btree
 );
 
 -- ALTER TABLE public.trainee DROP CONSTRAINT IF EXISTS trainee_uq CASCADE;
-ALTER TABLE public.trainee ADD CONSTRAINT trainee_uq UNIQUE (id_address);
+ALTER TABLE public.trainee ADD CONSTRAINT trainee_address_uq UNIQUE (id_address);
 
 -- ALTER TABLE public.trainee DROP CONSTRAINT IF EXISTS address_fk CASCADE;
 ALTER TABLE public.trainee ADD CONSTRAINT trainee_address_fk FOREIGN KEY (id_address)
@@ -118,7 +118,7 @@ USING btree
 );
 
 -- ALTER TABLE public.partner DROP CONSTRAINT IF EXISTS partner_uq CASCADE;
-ALTER TABLE public.partner ADD CONSTRAINT partner_uq UNIQUE (id_address);
+ALTER TABLE public.partner ADD CONSTRAINT partner_address_uq UNIQUE (id_address);
 
 -- ALTER TABLE public.partner DROP CONSTRAINT IF EXISTS address_fk CASCADE;
 ALTER TABLE public.partner ADD CONSTRAINT partner_address_fk FOREIGN KEY (id_address)
@@ -158,7 +158,11 @@ REFERENCES public.address (id) MATCH FULL
 ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- ALTER TABLE public.studio DROP CONSTRAINT IF EXISTS studio_uq CASCADE;
-ALTER TABLE public.studio ADD CONSTRAINT studio_uq UNIQUE (id_address);
+ALTER TABLE public.studio ADD CONSTRAINT studio_address_uq UNIQUE (id_address);
+
+
+-- ALTER TABLE public.partner DROP CONSTRAINT IF EXISTS partner_uq CASCADE;
+ALTER TABLE public.studio ADD CONSTRAINT partner_studio_uq UNIQUE (id_partner);
 
 -- ALTER TABLE public.studio DROP CONSTRAINT IF EXISTS trainee_fk CASCADE;
 ALTER TABLE public.studio ADD CONSTRAINT partner_fk FOREIGN KEY (id_partner)

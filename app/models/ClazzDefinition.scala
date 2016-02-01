@@ -135,11 +135,11 @@ class ClazzDefinitionServiceImpl @Inject() (protected val dbConfigProvider: Data
     val query =
       for {
         clazz <- slickClazzDefinitions if clazz.activeFrom <= now if clazz.activeTill >= now if clazz.isActive
-      } yield (clazz)
+      } yield clazz
     val result = db.run(query.result)
     result.map { clazz =>
       clazz.map {
-        case (clazz) => entity2model(clazz)
+        case clazz => entity2model(clazz)
       }
     }
   }

@@ -32,23 +32,23 @@ class AddressController @Inject()(
   extends Silhouette[User, JWTAuthenticator] {
 
   def create() = SecuredAction.async(parse.json) { implicit request =>
-    validateUpsert(None,request.body, service.create)
+    validateUpsert(None, service.create)
   }
 
 
   def retrieve(id: UUID) = SecuredAction.async { implicit request =>
     service.retrieve(id).flatMap { o =>
-      o.fold(Future.successful(NotFound(Json.obj("message" -> Messages("address.not.found")))))(c => Future.successful(Ok(Json.toJson(c))))
+      o.fold(Future.successful(NotFound(Json.obj("message" -> Messages("object.not.found")))))(c => Future.successful(Ok(Json.toJson(c))))
     }
   }
 
   def update(id: UUID) = SecuredAction.async(parse.json) { implicit request =>
-    validateUpsert(Some(id), request.body, service.update)
+    validateUpsert(Some(id), service.update)
   }
 
   def delete(id: UUID) = SecuredAction.async { implicit request =>
     service.delete(id).flatMap { r => r match {
-      case 0 => Future.successful(NotFound(Json.obj("message" -> Messages("address.not.found"))))
+      case 0 => Future.successful(NotFound(Json.obj("message" -> Messages("object.not.found"))))
       case 1 => Future.successful(Ok)
       case _ => Logger.error("WTH?!? We expect NO or exactly one unique result here")
         Future.successful(InternalServerError);
@@ -58,23 +58,23 @@ class AddressController @Inject()(
 
   def retrieveByOwner(id: UUID)= SecuredAction.async { implicit request =>
     service.retrieveByOwner(id, request.identity.id.get).flatMap { o =>
-      o.fold(Future.successful(NotFound(Json.obj("message" -> Messages("address.not.found")))))(c => Future.successful(Ok(Json.toJson(c))))
+      o.fold(Future.successful(NotFound(Json.obj("message" -> Messages("object.not.found")))))(c => Future.successful(Ok(Json.toJson(c))))
     }
   }
 
   def updateByOwner(id: UUID) = SecuredAction.async(parse.json) { implicit request =>
     service.retrieveByOwner(id, request.identity.id.get).flatMap { o =>
-      o.fold(Future.successful(NotFound(Json.obj("message" -> Messages("address.not.found")))))(c => validateUpsert(Some(id), request.body, service.update))
+      o.fold(Future.successful(NotFound(Json.obj("message" -> Messages("object.not.found")))))(c => validateUpsert(Some(id), service.update))
     }
   }
 
-  def validateUpsert(id: Option[UUID], body: JsValue, dbAction: Address => Future[Address]): Future[Result] = {
-    body.validate[FormValidator.Address] match {
+  def validateUpsert(id: Option[UUID], dbAction: Address => Future[Address])(implicit request: SecuredRequest[JsValue]): Future[Result] = {
+    request.body.validate[FormValidator.Address] match {
       case error: JsError => {
         Future.successful(BadRequest(Json.obj("message" -> Messages("save.fail"), "detail" -> JsError.toJson(error))))
       }
       case s: JsSuccess[FormValidator.Address] => {
-        body.validate[Address].map { obj =>
+        request.body.validate[Address].map { obj =>
           dbAction(obj.copy(id=id)).flatMap {
             case o:Address =>
               Future.successful(Ok(Json.obj("message" -> Messages("save.ok"))))
