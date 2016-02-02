@@ -3,7 +3,7 @@ package models
 import java.util.UUID
 import javax.inject.Inject
 
-import models.daos.DAOSlick
+import models.DAOSlick
 import org.joda.time.DateTime
 import play.api.db.slick.DatabaseConfigProvider
 import play.api.libs.json._

@@ -3,13 +3,14 @@ package utils
 import java.io.{StringWriter, PrintWriter}
 import javax.inject._
 
-import models.AppLogger
+import com.google.inject.name.Named
+import models.{Logentry}
 import play.api._
 import play.api.http.DefaultHttpErrorHandler
 import play.api.mvc.Results._
 import play.api.mvc._
 import play.api.routing.Router
-import akka.actor.{ActorSystem}
+import akka.actor.{ActorRef, ActorSystem}
 
 import scala.concurrent._
 
@@ -18,7 +19,7 @@ class ErrorHandler @Inject() (
                                config: Configuration,
                                sourceMapper: OptionalSourceMapper,
                                router: Provider[Router],
-                               system: ActorSystem
+                               @Named("DBLogAdmin") loggerActor: ActorRef
                              ) extends DefaultHttpErrorHandler(env, config, sourceMapper, router) {
 
   def getStackTraceAsString(t: Throwable) = {
@@ -28,9 +29,7 @@ class ErrorHandler @Inject() (
   }
 
   override def onProdServerError(request: RequestHeader, exception: UsefulException) = {
-    //http://doc.akka.io/docs/akka/snapshot/general/addressing.html
-    val loggerActor = system.actorSelection("/user/DBLogAdmin")
-    loggerActor ! AppLogger(exception.id,exception.title,exception.toString,getStackTraceAsString(exception.getCause),request.headers.toString(),request.method,request.remoteAddress,request.uri)
+    loggerActor ! Logentry(exception.id,exception.title,exception.toString,getStackTraceAsString(exception.getCause),request.headers.toString(),request.method,request.remoteAddress,request.uri)
     super.onProdServerError(request,exception)
   }
 

@@ -2,7 +2,7 @@ package modules
 
 import com.google.inject.AbstractModule
 import models._
-import models.daos._
+import models._
 import net.codingwell.scalaguice.ScalaModule
 import utils._
 
@@ -23,10 +23,8 @@ class ServiceModule extends AbstractModule with ScalaModule {
     bind[ClazzService].to[ClazzServiceImpl]
     bind[OfferService].to[OfferServiceImpl]
     bind[StudioService].to[StudioServiceImpl]
-    bind[RegistrationDAO].to[RegistrationDAOImpl]
-    bind[LoggerDAO].to[LoggerDAOImpl]
-    bind[SubscriptionDAO].to[SubscriptionDAOImpl]
-    bind[BillDAO].to[BillDAOImpl]
+    bind[RegistrationService].to[RegistrationServiceImpl]
+    bind[LoggerService].to[LoggerServiceImpl]
     bind[MailTokenService[MailTokenUser]].to[MailTokenServiceImpl]
     bind[MailService].to[MailServiceSendgrid]
     bind[ImageService].to[ImageServiceCloudinary]

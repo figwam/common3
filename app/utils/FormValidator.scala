@@ -1,5 +1,7 @@
 package utils
 
+import java.util.UUID
+
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 import Reads._
@@ -7,6 +9,7 @@ import Reads._
 /**
  * The form which provides additional Form Validation
  */
+
 object FormValidator {
 
 
@@ -76,9 +79,7 @@ object FormValidator {
   }
 
 
-  case class User(
-                   firstname: String,
-                   lastname: String)
+  case class User(firstname: String, lastname: String)
 
   object User {
     implicit val userReads = (
@@ -88,14 +89,22 @@ object FormValidator {
   }
 
 
-  case class Image(
-                   file: String,
-                   ftype: String)
+  case class Image(file: String, ftype: String)
 
   object Image {
     implicit val reads = (
       (__ \ 'file).read[String](minLength[String](1)) and
         (__ \ 'type).read[String](minLength[String](1))
       )(Image.apply _)
+  }
+
+
+  case class Registration(idClazz: String,ctype: String)
+
+  object Registration {
+    implicit val reads = (
+      (__ \ 'idClazz).read[String](verifying[String](_.matches("[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}"))) and
+        (__ \ 'type).read[String](minLength[String](1))
+      )(Registration.apply _)
   }
 }

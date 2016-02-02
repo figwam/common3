@@ -4,7 +4,7 @@ import java.sql.Timestamp
 import java.util.UUID
 import javax.inject.Inject
 
-import models.daos.{DAOSlick, DBTableDefinitions}
+import models.{DAOSlick, DBTableDefinitions}
 import play.api.db.slick.DatabaseConfigProvider
 import play.api.libs.json.Json
 

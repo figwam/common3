@@ -2,10 +2,10 @@ package models
 
 import java.net.URL
 import java.sql.Timestamp
-import java.util.{GregorianCalendar, Calendar, UUID}
+import java.util.{Calendar, UUID}
 import javax.inject.Inject
 
-import models.daos.{DAOSlick, Page}
+import models.{DAOSlick, Page}
 import play.api.db.slick.DatabaseConfigProvider
 import play.api.libs.json._
 

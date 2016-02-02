@@ -6,7 +6,7 @@ import java.util.{Date, Calendar, UUID}
 import javax.inject.Inject
 
 import models.Recurrence.Recurrence
-import models.daos.{PageClazzDefinition, DAOSlick}
+import models.{PageClazzDefinition, DAOSlick}
 import play.api.db.slick.DatabaseConfigProvider
 import play.api.libs.json.Reads._
 

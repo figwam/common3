@@ -1,4 +1,4 @@
-package models.daos
+package models
 
 import java.net.URL
 import java.sql.Timestamp
@@ -806,5 +806,7 @@ trait DBTableDefinitions {
   def model2entity(clazz: Clazz): DBClazz = DBClazz(None, asTimestamp(clazz.startFrom), asTimestamp(clazz.endAt), new Timestamp(System.currentTimeMillis), new Timestamp(System.currentTimeMillis), clazz.idClazzDef)
   def entity2model(clazz: DBClazzView, studio: DBStudio, addressStudio: DBAddress, idReg: Option[UUID] = None): Clazz = Clazz(clazz.id, asCalendar(clazz.startFrom), asCalendar(clazz.endAt), clazz.name, clazz.contingent, clazz.avatarurl.map(new URL(_)), clazz.description, clazz.tags, clazz.registrations, clazz.searchMeta, clazz.amount, clazz.idClazzDef, clazz.idStudio, idReg)
 
+  def model2entity(o: Registration): DBRegistration = DBRegistration(o.id,new Timestamp(System.currentTimeMillis),o.idTrainee,o.idClazz)
+  def entity2model(o: DBRegistration): Registration = Registration(o.id,o.idTrainee,o.idClazz)
 
 }

@@ -31,7 +31,7 @@ class AddressController @Inject()(
                                        service: AddressService)
   extends Silhouette[User, JWTAuthenticator] {
 
-  def create() = SecuredAction.async(parse.json) { implicit request =>
+  def create = SecuredAction.async(parse.json) { implicit request =>
     validateUpsert(None, service.create)
   }
 
