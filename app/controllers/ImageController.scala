@@ -43,9 +43,9 @@ class ImageController @Inject()(
         request.body.validate[FormValidator.Image].map { obj =>
           val id = UUID.randomUUID()
           //val idp = UUID.randomUUID()+"\\.\\w+".r.findAllIn(obj.file)
-          imageService.createAsync(obj.file, id)
+          imageService.createAsync(obj.file, id, "gymix, "+request.path)
           Future.successful(Created(Json.obj("message" -> Messages("save.ok")))
-            .withHeaders(("Location",request.path+"/"+id)))
+            .withHeaders(("Location",request.path+"/"+id+".jpg")))
         }
       }.recoverTotal {
         case error =>

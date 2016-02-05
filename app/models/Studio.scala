@@ -42,9 +42,9 @@ trait StudioService extends DBTableDefinitions {
 
   // CRUD
   def create(obj: Studio): Future[Studio]
-  def retrieve(owner: UUID): Future[Option[Studio]]
+  def retrieveByOwner(owner: UUID): Future[Option[Studio]]
   def update (objIn: Studio): Future[Studio]
-  def delete(owner: UUID): Future[Int]
+  def deleteByOwner(owner: UUID): Future[Int]
 
 }
 
@@ -71,7 +71,7 @@ class StudioServiceImpl @Inject()(protected val dbConfigProvider: DatabaseConfig
     db.run(actions).map(s => obj.copy(id=s.id))
   }
 
-  override def retrieve(owner: UUID): Future[Option[Studio]] = {
+  override def retrieveByOwner(owner: UUID): Future[Option[Studio]] = {
     db.run(slickStudios.filter(_.idPartner === owner).result.headOption).map(obj => obj.map(o => entity2model(o)))
   }
 
@@ -86,7 +86,7 @@ class StudioServiceImpl @Inject()(protected val dbConfigProvider: DatabaseConfig
   }
 
 
-  override def delete(owner: UUID): Future[Int] = db.run(slickStudios.filter(_.idPartner === owner).delete)
+  override def deleteByOwner(owner: UUID): Future[Int] = db.run(slickStudios.filter(_.idPartner === owner).delete)
 
 
 }

@@ -3,7 +3,7 @@ package utils
 import java.util
 import java.util.UUID
 
-import com.cloudinary.Cloudinary
+import com.cloudinary.{Transformation, Cloudinary}
 import com.cloudinary.utils.ObjectUtils
 import com.google.inject.ImplementedBy
 import play.Play
@@ -15,8 +15,8 @@ import scala.concurrent.duration._
 
 @ImplementedBy(classOf[ImageServiceCloudinary])
 trait ImageService {
-  def createAsync(path: String, id: UUID): Unit
-  def createImage(path: String, id: UUID): Unit
+  def createAsync(path: String, id: UUID, tags: String): Unit
+  def createImage(path: String, id: UUID, tags: String): Unit
   def deleteAsync(id: UUID): Unit
   def deleteImage(id: UUID): Unit
 }
@@ -27,13 +27,13 @@ class ImageServiceCloudinary extends ImageService {
   lazy val key = Play.application().configuration().getString("cloudinary.key")
   lazy val secret = Play.application().configuration().getString("cloudinary.secret")
 
-  def createAsync(path: String, id: UUID) = {
+  def createAsync(path: String, id: UUID, tags: String) = {
     Akka.system.scheduler.scheduleOnce(100 milliseconds) {
-      createImage(path, id)
+      createImage(path, id, tags)
     }
   }
 
-  def createImage(path: String, id: UUID) = {
+  def createImage(path: String, id: UUID, tags: String) = {
     val config = new util.HashMap[String,String]
     config.put("cloud_name", name)
     config.put("api_key", key)
@@ -41,8 +41,9 @@ class ImageServiceCloudinary extends ImageService {
     val cloudinary = new Cloudinary(config)
     val options = ObjectUtils.asMap(
       "public_id", id.toString,
-      "tags", "gymix",
-      "format", "jpg"
+      "tags", tags,
+      "format", "jpg",
+      "transformation", new Transformation().crop("limit").width(400).height(300)
     )
     cloudinary.uploader().upload(path, options)
   }

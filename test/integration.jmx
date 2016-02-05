@@ -43,6 +43,11 @@
             <stringProp name="Argument.value">trainees</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
+          <elementProp name="image_folder" elementType="Argument">
+            <stringProp name="Argument.name">image_folder</stringProp>
+            <stringProp name="Argument.value">/Users/alex/workspace/sport/portal3/common/test</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
         </collectionProp>
       </Arguments>
       <hashTree/>
@@ -1713,6 +1718,61 @@ vars.put(&quot;studio&quot;,mapper.writeValueAsString(data));</stringProp>
                 </ResponseAssertion>
                 <hashTree/>
               </hashTree>
+              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="upload image" enabled="true">
+                <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+                <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+                  <collectionProp name="Arguments.arguments">
+                    <elementProp name="" elementType="HTTPArgument">
+                      <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                      <stringProp name="Argument.value">{&quot;file&quot;:&quot;${image_folder}/${img}.jpg&quot;,&quot;type&quot;:&quot;jpg&quot;}</stringProp>
+                      <stringProp name="Argument.metadata">=</stringProp>
+                    </elementProp>
+                  </collectionProp>
+                </elementProp>
+                <stringProp name="HTTPSampler.domain"></stringProp>
+                <stringProp name="HTTPSampler.port"></stringProp>
+                <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+                <stringProp name="HTTPSampler.response_timeout"></stringProp>
+                <stringProp name="HTTPSampler.protocol">http</stringProp>
+                <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
+                <stringProp name="HTTPSampler.path">c/images</stringProp>
+                <stringProp name="HTTPSampler.method">POST</stringProp>
+                <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+                <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+                <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+                <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+                <boolProp name="HTTPSampler.monitor">false</boolProp>
+                <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+              </HTTPSamplerProxy>
+              <hashTree>
+                <RandomVariableConfig guiclass="TestBeanGUI" testclass="RandomVariableConfig" testname="Random Variable" enabled="true">
+                  <stringProp name="maximumValue">4</stringProp>
+                  <stringProp name="minimumValue">1</stringProp>
+                  <stringProp name="outputFormat">img00</stringProp>
+                  <boolProp name="perThread">false</boolProp>
+                  <stringProp name="randomSeed"></stringProp>
+                  <stringProp name="variableName">img</stringProp>
+                </RandomVariableConfig>
+                <hashTree/>
+                <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+                  <collectionProp name="Asserion.test_strings">
+                    <stringProp name="49587">201</stringProp>
+                  </collectionProp>
+                  <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+                  <boolProp name="Assertion.assume_success">false</boolProp>
+                  <intProp name="Assertion.test_type">1</intProp>
+                </ResponseAssertion>
+                <hashTree/>
+                <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="extract id" enabled="true">
+                  <stringProp name="RegexExtractor.useHeaders">true</stringProp>
+                  <stringProp name="RegexExtractor.refname">_imageid</stringProp>
+                  <stringProp name="RegexExtractor.regex">Location:\s*(.+)</stringProp>
+                  <stringProp name="RegexExtractor.template">$1</stringProp>
+                  <stringProp name="RegexExtractor.default"></stringProp>
+                  <stringProp name="RegexExtractor.match_number"></stringProp>
+                </RegexExtractor>
+                <hashTree/>
+              </hashTree>
               <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="create weekly clazz" enabled="true">
                 <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
                 <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
@@ -1776,7 +1836,7 @@ userData.put(&quot;tags&quot;,clazztype);
 userData.put(&quot;recurrence&quot;,&quot;weekly&quot;);
 userData.put(&quot;amount&quot;,&quot;10&quot;);
 userData.put(&quot;isActive&quot;,false);
-userData.put(&quot;avatarurl&quot;,&quot;https://www.ywcampls.org/_asset/x953xn/Fitness-page-image.jpg&quot;);
+userData.put(&quot;avatarurl&quot;,&quot;http://localhost:9000${_imageid_g1}&quot;);
 
 vars.put(&quot;clazz&quot;,mapper.writeValueAsString(userData));
 vars.put(&quot;clazz.name&quot;,userData.get(&quot;name&quot;));
@@ -1853,9 +1913,19 @@ Long oneHour = 60*60*1000L;
 Date start = new Date(inThreeDays-(inThreeDays%3600000)+oneHour);
 Date end = new Date(start.getTime()+oneHour);
 
+userData.put(&quot;duration&quot;,60);
+userData.put(&quot;contingent&quot;,5);
+userData.put(&quot;startFrom&quot;,df.format(start));
 userData.put(&quot;name&quot;,&quot;Super &quot;+clazztype+&quot; Test Kurs&quot;);
 userData.put(&quot;description&quot;,vars.get(&quot;lorem.long&quot;));
+userData.put(&quot;endAt&quot;,df.format(end));
+userData.put(&quot;activeFrom&quot;,df.format(new Date()));
+userData.put(&quot;activeTill&quot;,&quot;2222-01-30T23:00:00.000Z&quot;);
+userData.put(&quot;tags&quot;,clazztype);
+userData.put(&quot;recurrence&quot;,&quot;weekly&quot;);
+userData.put(&quot;amount&quot;,&quot;10&quot;);
 userData.put(&quot;isActive&quot;,true);
+userData.put(&quot;avatarurl&quot;,&quot;http://localhost:9000${_imageid_g1}&quot;);
 
 vars.put(&quot;clazz&quot;,mapper.writeValueAsString(userData));</stringProp>
                 </BeanShellPreProcessor>
@@ -2634,7 +2704,7 @@ vars.put(&quot;clazz&quot;,mapper.writeValueAsString(userData));</stringProp>
                   <stringProp name="RegexExtractor.regex">&quot;id&quot;:&quot;([0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})</stringProp>
                   <stringProp name="RegexExtractor.template">$1</stringProp>
                   <stringProp name="RegexExtractor.default"></stringProp>
-                  <stringProp name="RegexExtractor.match_number"></stringProp>
+                  <stringProp name="RegexExtractor.match_number">1</stringProp>
                 </RegexExtractor>
                 <hashTree/>
                 <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="extract id2" enabled="true">
@@ -2871,8 +2941,16 @@ vars.put(&quot;clazz&quot;,mapper.writeValueAsString(userData));</stringProp>
                 <hashTree/>
                 <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
                   <collectionProp name="Asserion.test_strings">
-                    <stringProp name="-252499809">${_regid2_g1}</stringProp>
                     <stringProp name="2121102135">&quot;total&quot;:1</stringProp>
+                  </collectionProp>
+                  <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+                  <boolProp name="Assertion.assume_success">false</boolProp>
+                  <intProp name="Assertion.test_type">2</intProp>
+                </ResponseAssertion>
+                <hashTree/>
+                <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+                  <collectionProp name="Asserion.test_strings">
+                    <stringProp name="2018386143">${_clazzid_g1}</stringProp>
                   </collectionProp>
                   <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
                   <boolProp name="Assertion.assume_success">false</boolProp>
@@ -6667,7 +6745,7 @@ vars.put(&quot;data&quot;,mapper.writeValueAsString(data));</stringProp>
             <collectionProp name="Arguments.arguments"/>
           </elementProp>
           <stringProp name="HTTPSampler.domain">localhost</stringProp>
-          <stringProp name="HTTPSampler.port">9001</stringProp>
+          <stringProp name="HTTPSampler.port">9000</stringProp>
           <stringProp name="HTTPSampler.connect_timeout"></stringProp>
           <stringProp name="HTTPSampler.response_timeout"></stringProp>
           <stringProp name="HTTPSampler.protocol"></stringProp>
@@ -6799,7 +6877,7 @@ for (int i=0;i&lt;manager.getCookieCount();i++){
             <collectionProp name="Arguments.arguments">
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">{&quot;file&quot;:&quot;/Users/alex/Desktop/screen.png&quot;,&quot;type&quot;:&quot;png&quot;}</stringProp>
+                <stringProp name="Argument.value">{&quot;file&quot;:&quot;${image_folder}/${img}.jpg&quot;,&quot;type&quot;:&quot;jpg&quot;}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
             </collectionProp>
@@ -6810,7 +6888,7 @@ for (int i=0;i&lt;manager.getCookieCount();i++){
           <stringProp name="HTTPSampler.response_timeout"></stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
           <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
-          <stringProp name="HTTPSampler.path">/c/images</stringProp>
+          <stringProp name="HTTPSampler.path">c/images</stringProp>
           <stringProp name="HTTPSampler.method">POST</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -6820,6 +6898,15 @@ for (int i=0;i&lt;manager.getCookieCount();i++){
           <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
         </HTTPSamplerProxy>
         <hashTree>
+          <RandomVariableConfig guiclass="TestBeanGUI" testclass="RandomVariableConfig" testname="Random Variable" enabled="true">
+            <stringProp name="maximumValue">4</stringProp>
+            <stringProp name="minimumValue">1</stringProp>
+            <stringProp name="outputFormat">img00</stringProp>
+            <boolProp name="perThread">false</boolProp>
+            <stringProp name="randomSeed"></stringProp>
+            <stringProp name="variableName">img</stringProp>
+          </RandomVariableConfig>
+          <hashTree/>
           <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
             <collectionProp name="Asserion.test_strings">
               <stringProp name="49587">201</stringProp>

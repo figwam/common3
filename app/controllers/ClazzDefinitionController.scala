@@ -52,8 +52,11 @@ class ClazzDefinitionController @Inject()(
   }
 
   def update(id: UUID) = SecuredAction.async(parse.json) { implicit request =>
-    validateUpsert(Some(id), service.update).flatMap{ _ =>
-      Future.successful(Ok(Json.obj("message" -> Messages("save.ok"))))
+    // The upset will always return status=created for each success case (update or insert),
+    // which is wrong for update. So in case we get 201==Created, we just rewrite the resonse into 200==Ok
+    validateUpsert(Some(id), service.update).map{ r =>  r.header.status match {
+        case 201 => Ok(Json.obj("message" -> Messages("save.ok")))
+      }
     }
   }
 
@@ -91,7 +94,7 @@ class ClazzDefinitionController @Inject()(
       }
       case s: JsSuccess[FormValidator.ClazzDef] => {
         request.body.validate[ClazzDefinition].map { obj =>
-          sService.retrieve(request.identity.id.get).flatMap { s => s match {
+          sService.retrieveByOwner(request.identity.id.get).flatMap { s => s match {
             case Some(s) =>
               dbAction(obj.copy(id=id, idStudio = s.id)).flatMap {
                 case o: ClazzDefinition =>

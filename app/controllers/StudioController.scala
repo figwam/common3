@@ -41,7 +41,7 @@ class StudioController @Inject()(
 
 
   def retrieve = SecuredAction.async { implicit request =>
-    service.retrieve(request.identity.id.get).flatMap { o =>
+    service.retrieveByOwner(request.identity.id.get).flatMap { o =>
       o.fold(Future.successful(NotFound(Json.obj("message" -> Messages("object.not.found")))))(c => Future.successful(Ok(Json.toJson(c))))
     }
   }
@@ -53,7 +53,7 @@ class StudioController @Inject()(
   }
 
   def delete = SecuredAction.async { implicit request =>
-    service.delete(request.identity.id.get).flatMap { r => r match {
+    service.deleteByOwner(request.identity.id.get).flatMap { r => r match {
       case 0 => Future.successful(NotFound(Json.obj("message" -> Messages("object.not.found"))))
       case 1 => Future.successful(Ok)
       case _ => Logger.error("WTH?!? We expect NO or exactly one unique result here")
