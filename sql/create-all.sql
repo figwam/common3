@@ -775,25 +775,29 @@ CREATE VIEW clazz_view AS
 				and s.id_address = adrS.id;
 
 CREATE FUNCTION max_reg() RETURNS trigger AS $max_reg$
-DECLARE
-  nr_of_regs int;
-  contingent int;
-BEGIN
+  DECLARE
+    nr_of_regs int;
+    contingent int;
+  BEGIN
 
-  SELECT cd.contingent into contingent
-  FROM clazz_definition cd, clazz c
+    SELECT cd.contingent into contingent
+    FROM clazz_definition cd, clazz c
+    WHERE c.id = NEW.id_clazz AND cd.id = c.id_clazzdef;
 
+    SELECT count(*) into nr_of_regs
+    FROM registration r
+    WHERE r.id_clazz = NEW.id_clazz;
 
-  IF NEW.empname IS NULL THEN
-    RAISE EXCEPTION 'empname cannot be null';
-  END IF;
+    IF nr_of_regs > (contingent-1) THEN
+      RAISE EXCEPTION 'contingent exceeded';
+    END IF;
 
-  -- Remember who changed the payroll when
-  NEW.last_date := current_timestamp;
-  NEW.last_user := current_user;
-  RETURN NEW;
-END;
+    RETURN NEW;
+  END;
 $max_reg$ LANGUAGE plpgsql;
+
+DROP TRIGGER max_reg ON registration;
+DROP FUNCTION max_reg();
 
 CREATE TRIGGER max_reg BEFORE INSERT OR UPDATE ON registration
 FOR EACH ROW EXECUTE PROCEDURE max_reg();
