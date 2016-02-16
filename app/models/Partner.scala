@@ -6,7 +6,6 @@ import javax.inject.Inject
 import com.mohiva.play.silhouette.api.{LoginInfo}
 
 import java.sql.Timestamp
-import models.DAOSlick
 import play.api.db.slick.DatabaseConfigProvider
 import play.api.libs.json._
 

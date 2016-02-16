@@ -1,10 +1,8 @@
 package models
 
-import java.sql.Timestamp
 import java.util.UUID
 import javax.inject.Inject
 
-import models.DAOSlick
 import play.api.db.slick.DatabaseConfigProvider
 import play.api.libs.json._
 

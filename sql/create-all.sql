@@ -774,6 +774,29 @@ CREATE VIEW clazz_view AS
         and cd.id_studio = s.id
 				and s.id_address = adrS.id;
 
+CREATE FUNCTION max_reg() RETURNS trigger AS $max_reg$
+DECLARE
+  nr_of_regs int;
+  contingent int;
+BEGIN
+
+  SELECT cd.contingent into contingent
+  FROM clazz_definition cd, clazz c
+
+
+  IF NEW.empname IS NULL THEN
+    RAISE EXCEPTION 'empname cannot be null';
+  END IF;
+
+  -- Remember who changed the payroll when
+  NEW.last_date := current_timestamp;
+  NEW.last_user := current_user;
+  RETURN NEW;
+END;
+$max_reg$ LANGUAGE plpgsql;
+
+CREATE TRIGGER max_reg BEFORE INSERT OR UPDATE ON registration
+FOR EACH ROW EXECUTE PROCEDURE max_reg();
 
 -- # --- !Downs
 

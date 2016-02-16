@@ -20,7 +20,6 @@ class ServiceModule extends AbstractModule with ScalaModule {
     bind[TraineeService].to[TraineeServiceImpl]
     bind[PartnerService].to[PartnerServiceImpl]
     bind[ClazzDefinitionService].to[ClazzDefinitionServiceImpl]
-    bind[ClazzService].to[ClazzServiceImpl]
     bind[OfferService].to[OfferServiceImpl]
     bind[StudioService].to[StudioServiceImpl]
     bind[RegistrationService].to[RegistrationServiceImpl]

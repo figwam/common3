@@ -2,11 +2,10 @@ package models
 
 import java.net.URL
 import java.sql.Timestamp
-import java.util.{Date, Calendar, UUID}
+import java.util.{Calendar, UUID}
 import javax.inject.Inject
 
 import models.Recurrence.Recurrence
-import models.{PageClazzDefinition, DAOSlick}
 import play.api.db.slick.DatabaseConfigProvider
 import play.api.libs.json.Reads._
 
@@ -145,10 +144,10 @@ class ClazzDefinitionServiceImpl @Inject() (protected val dbConfigProvider: Data
   }
 
   private def countByPartner(idPartner: UUID): Future[Int] = {
-    val action = (for {
+    val action = for {
       studio <- slickStudios.filter(_.idPartner === idPartner)
       clazzDef <- slickClazzDefinitions.filter(_.idStudio === studio.id)
-    } yield ())
+    } yield ()
     db.run(action.length.result)
   }
 

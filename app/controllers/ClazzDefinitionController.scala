@@ -63,7 +63,7 @@ class ClazzDefinitionController @Inject()(
   def delete(id: UUID) = SecuredAction.async { implicit request =>
     service.delete(id).flatMap { r => r match {
         case 0 => Future.successful(NotFound(Json.obj("message" -> Messages("object.not.found"))))
-        case 1 => Future.successful(Ok(Json.obj("message" -> Messages("object.not.found"))))
+        case 1 => Future.successful(Ok(Json.obj("message" -> "OK")))
         case _ => Logger.error("WTH?!? Whe expect NO or exactly one unique result here")
           Future.successful(InternalServerError);
       }
