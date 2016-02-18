@@ -6,7 +6,7 @@ import javax.inject.{Inject, Singleton}
 import akka.actor.{Actor, Cancellable}
 import models.{ClazzService, ClazzDefinitionService, Clazz}
 import org.postgresql.util.PSQLException
-import play.api.Logger
+import play.api.{Configuration, Logger}
 import play.libs.Json
 import scala.concurrent.duration._
 
@@ -18,7 +18,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 /**
  * Created by alex on 27/09/15.
  */
-class ClazzScheduler @Inject()(cService: ClazzService, cdService: ClazzDefinitionService) extends Actor {
+class ClazzScheduler @Inject()(conf: Configuration, cService: ClazzService, cdService: ClazzDefinitionService) extends Actor {
 
 
 
@@ -28,7 +28,7 @@ class ClazzScheduler @Inject()(cService: ClazzService, cdService: ClazzDefinitio
 
   override def preStart(): Unit = {
     import scala.concurrent.duration._
-    lazy val refreshInterval:Int = 10 //Play.application().configuration().getString("clazz.definition.refresh.intervall").toInt
+    lazy val refreshInterval:Int = conf.getInt("clazz.definition.refresh.intervall").getOrElse(10)
     scheduler = context.system.scheduler.schedule(
       initialDelay = refreshInterval.seconds,
       interval = refreshInterval.seconds,
@@ -47,7 +47,7 @@ class ClazzScheduler @Inject()(cService: ClazzService, cdService: ClazzDefinitio
     case CREATE_CLAZZES =>
       try {
         Logger.info("Execute Cron "+CREATE_CLAZZES)
-        lazy val seeInAdvanceDays = 25 //Play.application().configuration().getString("days.see.clazzes.in.advance").toInt
+        lazy val seeInAdvanceDays:Int = conf.getInt("days.see.clazzes.in.advance").getOrElse(7)
         val clazzes =  cdService.listActive()
         Logger.info("Execute Cron "+CREATE_CLAZZES+":"+Json.toJson(clazzes))
         clazzes.map { clazzDef =>

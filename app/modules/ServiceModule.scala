@@ -23,9 +23,11 @@ class ServiceModule extends AbstractModule with ScalaModule {
     bind[OfferService].to[OfferServiceImpl]
     bind[StudioService].to[StudioServiceImpl]
     bind[RegistrationService].to[RegistrationServiceImpl]
-    bind[LoggerService].to[LoggerServiceImpl]
     bind[MailTokenService[MailTokenUser]].to[MailTokenServiceImpl]
     bind[MailService].to[MailServiceSendgrid]
     bind[ImageService].to[ImageServiceCloudinary]
+
+
+    bind[LoggerService].to[LoggerServiceImpl]
   }
 }

@@ -788,8 +788,8 @@ CREATE FUNCTION max_reg() RETURNS trigger AS $max_reg$
     FROM registration r
     WHERE r.id_clazz = NEW.id_clazz;
 
-    IF nr_of_regs > (contingent-1) THEN
-      RAISE EXCEPTION 'contingent exceeded';
+    IF nr_of_regs >= contingent THEN
+      RAISE EXCEPTION 'CONTINGENT_EXCEEDED';
     END IF;
 
     RETURN NEW;

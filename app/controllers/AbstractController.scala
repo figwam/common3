@@ -5,6 +5,7 @@ import java.util.UUID
 import com.mohiva.play.silhouette.api.Silhouette
 import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
 import models.{Model, User}
+import org.postgresql.util.PSQLException
 import play.api.Logger
 import play.api.i18n.Messages
 import play.api.libs.json._
@@ -48,17 +49,19 @@ abstract class AbstractController extends Silhouette[User, JWTAuthenticator]{
         //define the doProcess function
         def doProcess(enrichedJson: JsValue) = {
           enrichedJson.validate[T].map { obj =>
-            dbAction(obj).flatMap {
+            dbAction(obj).map{
               // execute the action on the object and return the created Response
               case o if o.isInstanceOf[Model] => {
                   o.asInstanceOf[Model].id.get
-                  Future.successful(Created(Json.obj("message" -> Messages("save.ok")))
-                    .withHeaders(("Location", request.path + "/" + o.asInstanceOf[Model].id.get)))
+                  Created(Json.obj("message" -> Messages("save.ok")))
+                    .withHeaders(("Location", request.path + "/" + o.asInstanceOf[Model].id.get))
               }
-              case o if !o.isInstanceOf[Model] => Future.successful(Ok(Json.obj("message" -> Messages("save.ok"))))
-              case _ =>
+              case o if !o.isInstanceOf[Model] =>
+                Ok(Json.obj("message" -> Messages("save.ok")))
+            }.recover {
+              case ex:PSQLException if ex.getMessage.contains("CONTINGENT_EXCEEDED") =>
                 logger.error("Updating or Creating Object failed")
-                Future.successful(InternalServerError(Json.obj("message" -> Messages("save.fail"))))
+                BadRequest(Json.obj("message" -> Messages("save.fail"), "detail" -> Messages(ex.getMessage)))
             }
           }.recoverTotal {
             case error =>

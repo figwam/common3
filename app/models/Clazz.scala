@@ -55,7 +55,7 @@ trait ClazzService  {
     *
     * @param page
     * @param pageSize
-    * @param orderBy
+    * @param sortBy
     * @param filter
     * @param idUser
     * @return
@@ -67,7 +67,7 @@ trait ClazzService  {
     *
     * @param page
     * @param pageSize
-    * @param orderBy
+    * @param sortBy
     * @param filter
     * @param idUser
     * @param startFrom
@@ -75,6 +75,7 @@ trait ClazzService  {
     */
   def listPersonalizedMy(page: Int = 0, pageSize: Int = 10, sortBy: Int = 1, filter: String = "%", idUser: UUID, startFrom: Timestamp, endAt: Timestamp): Future[Page]
 
+  def clazzesByClazzDef(idClazzDef: UUID): Future[Page]
   def count: Future[Int]
   def count(filter: String): Future[Int]
 
@@ -101,6 +102,23 @@ abstract class ClazzServiceImpl @Inject() (protected val dbConfigProvider: Datab
   override def count(filter: String): Future[Int] =
     db.run(slickClazzViews.filter(_.startFrom >= new Timestamp(System.currentTimeMillis())).filter(_.searchMeta.toLowerCase like filter.toLowerCase).length.result)
 
+  def clazzesByClazzDef(idClazzDef: UUID): Future[Page] = {
+    val clazzAction = for {
+      c <- slickClazzViews.filter(_.idClazzDef === idClazzDef)
+      s <- slickStudios.filter(_.id === c.idStudio)
+      a <- slickAddresses.filter(_.id === s.idAddress)
+    } yield (c, s, a)
+
+    db.run(clazzAction.result).map { clazz => //result is Seq[DBClazz]
+      clazz.map {
+        // go through all the DBClazzes and map them to Clazz
+        case (clazz, studio, addressS)  => {
+          entity2model(clazz, studio, addressS)
+        }
+      } // The result is Seq[Clazz] flapMap (works with Clazz) these to Page
+    }.flatMap (c3 => Future.successful(Page(c3, 0, 0L, 0L)))
+  }
+
   override def list(page: Int = 0, pageSize: Int = 10, sortBy: Int = 1, filter: String = "%"): Future[Page] = {
     val offset = if (page > 0) pageSize * page else 0
 
@@ -122,7 +140,7 @@ abstract class ClazzServiceImpl @Inject() (protected val dbConfigProvider: Datab
 
     val totalRows = count(filter)
 
-    db.run(sorted.drop(offset).take(pageSize).result).map { clazz => //result is Seq[DBClazz]
+    db.run(sorted.drop(offset).take(pageSize).result).map { clazz =>
       clazz.map {
         // go through all the DBClazzes and map them to Clazz
         case (clazz, studio, addressS)  => {

@@ -4,7 +4,7 @@ import java.util.UUID
 import java.util.concurrent.TimeoutException
 import javax.inject.{Inject, Singleton}
 
-import akka.actor.{Props, ActorRef, ActorSystem}
+import akka.actor.ActorRef
 import com.google.inject.name.Named
 import com.mohiva.play.silhouette.api.{Environment, Silhouette}
 import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
@@ -14,7 +14,6 @@ import play.api.Logger
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.libs.json._
 import play.api.mvc.Result
-import workers.ClazzScheduler
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

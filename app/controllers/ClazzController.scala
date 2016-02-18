@@ -61,4 +61,17 @@ class ClazzController @Inject()(
   }
 
 
+
+
+  def clazzesByClazzDef(id: UUID) = SecuredAction.async { implicit request =>
+    cService.clazzesByClazzDef(id).flatMap { pageClazzes =>
+      Future.successful(Ok(Json.toJson(pageClazzes)))
+    }.recover {
+      case ex: TimeoutException =>
+        Logger.error("Problem found in clazz list process")
+        InternalServerError(ex.getMessage)
+    }
+  }
+
+
 }

@@ -1773,7 +1773,7 @@ vars.put(&quot;studio&quot;,mapper.writeValueAsString(data));</stringProp>
                 </RegexExtractor>
                 <hashTree/>
               </hashTree>
-              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="create weekly clazz" enabled="true">
+              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="1 create weekly clazz" enabled="true">
                 <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
                 <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
                   <collectionProp name="Arguments.arguments">
@@ -1827,7 +1827,7 @@ Date end = new Date(start.getTime()+oneHour);
 userData.put(&quot;duration&quot;,60);
 userData.put(&quot;contingent&quot;,5);
 userData.put(&quot;startFrom&quot;,df.format(start));
-userData.put(&quot;name&quot;,&quot;Super &quot;+clazztype+&quot; Test Kurs&quot;);
+userData.put(&quot;name&quot;,&quot;(1.0) Super &quot;+clazztype+&quot; Test Kurs&quot;);
 userData.put(&quot;description&quot;,vars.get(&quot;lorem.long&quot;));
 userData.put(&quot;endAt&quot;,df.format(end));
 userData.put(&quot;activeFrom&quot;,df.format(new Date()));
@@ -2041,7 +2041,7 @@ vars.put(&quot;clazz&quot;,mapper.writeValueAsString(userData));</stringProp>
                 </RegexExtractor>
                 <hashTree/>
               </hashTree>
-              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="create onetime clazz" enabled="true">
+              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="2 create onetime clazz" enabled="true">
                 <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
                 <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
                   <collectionProp name="Arguments.arguments">
@@ -2096,7 +2096,7 @@ Date end = new Date(start.getTime()+durationInMs);
 
 userData.put(&quot;contingent&quot;,5);
 userData.put(&quot;startFrom&quot;,df.format(start));
-userData.put(&quot;name&quot;,&quot;Super &quot;+clazztype+&quot; Onetime Test Kurs&quot;);
+userData.put(&quot;name&quot;,&quot;(2) Super &quot;+clazztype+&quot; Onetime Test Kurs&quot;);
 userData.put(&quot;description&quot;,vars.get(&quot;lorem.long&quot;));
 userData.put(&quot;endAt&quot;,df.format(end));
 userData.put(&quot;activeFrom&quot;,df.format(new Date()));
@@ -2426,7 +2426,7 @@ vars.put(&quot;clazz&quot;,mapper.writeValueAsString(userData));</stringProp>
                 </ResponseAssertion>
                 <hashTree/>
               </hashTree>
-              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="create weekly clazz back" enabled="true">
+              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="1 create weekly clazz back" enabled="true">
                 <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
                 <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
                   <collectionProp name="Arguments.arguments">
@@ -2480,7 +2480,7 @@ Date end = new Date(start.getTime()+oneHour);
 userData.put(&quot;duration&quot;,60);
 userData.put(&quot;contingent&quot;,5);
 userData.put(&quot;startFrom&quot;,df.format(start));
-userData.put(&quot;name&quot;,&quot;Super &quot;+clazztype+&quot; Test Kurs&quot;);
+userData.put(&quot;name&quot;,&quot;(1.1) Super &quot;+clazztype+&quot; Test Kurs&quot;);
 userData.put(&quot;description&quot;,vars.get(&quot;lorem.long&quot;));
 userData.put(&quot;endAt&quot;,df.format(end));
 userData.put(&quot;activeFrom&quot;,df.format(new Date()));
@@ -2508,6 +2508,96 @@ vars.put(&quot;clazz.amount&quot;,userData.get(&quot;amount&quot;));</stringProp
                 <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="extract id" enabled="true">
                   <stringProp name="RegexExtractor.useHeaders">true</stringProp>
                   <stringProp name="RegexExtractor.refname">_clazzdefid</stringProp>
+                  <stringProp name="RegexExtractor.regex">Location:\s*(.+)</stringProp>
+                  <stringProp name="RegexExtractor.template">$1</stringProp>
+                  <stringProp name="RegexExtractor.default"></stringProp>
+                  <stringProp name="RegexExtractor.match_number"></stringProp>
+                </RegexExtractor>
+                <hashTree/>
+              </hashTree>
+              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="3 create onetime clazz (contingent IS 0)" enabled="true">
+                <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+                <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+                  <collectionProp name="Arguments.arguments">
+                    <elementProp name="" elementType="HTTPArgument">
+                      <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                      <stringProp name="Argument.value">${clazz}</stringProp>
+                      <stringProp name="Argument.metadata">=</stringProp>
+                    </elementProp>
+                  </collectionProp>
+                </elementProp>
+                <stringProp name="HTTPSampler.domain"></stringProp>
+                <stringProp name="HTTPSampler.port"></stringProp>
+                <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+                <stringProp name="HTTPSampler.response_timeout"></stringProp>
+                <stringProp name="HTTPSampler.protocol">http</stringProp>
+                <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
+                <stringProp name="HTTPSampler.path">/partners/me/studio/clazzdefs</stringProp>
+                <stringProp name="HTTPSampler.method">POST</stringProp>
+                <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+                <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+                <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+                <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+                <boolProp name="HTTPSampler.monitor">false</boolProp>
+                <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+              </HTTPSamplerProxy>
+              <hashTree>
+                <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="Data" enabled="true">
+                  <stringProp name="filename"></stringProp>
+                  <stringProp name="parameters"></stringProp>
+                  <boolProp name="resetInterpreter">false</boolProp>
+                  <stringProp name="script">import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+List e = Arrays.asList(vars.get(&quot;clazztype&quot;).toString().split(&quot;,&quot;));
+String clazztype = e.get(new Random().nextInt(e.size())).replaceAll(&quot; *&quot;,&quot;&quot;);
+
+ObjectMapper mapper = new ObjectMapper();
+Map userData = new HashMap();
+
+
+Long duration = 90; // set class duration in Munites
+DateFormat df = new SimpleDateFormat(&quot;yyyy-MM-dd&apos;T&apos;HH:mm:ss.SSS&apos;Z&apos;&quot;);
+Long inThreeDays = System.currentTimeMillis()+3*24*60*60*1000;
+Long durationInMs = duration*60*1000L;
+
+Date start = new Date(inThreeDays-(inThreeDays%3600000)+durationInMs);
+Date end = new Date(start.getTime()+durationInMs);
+
+userData.put(&quot;contingent&quot;,0);
+userData.put(&quot;startFrom&quot;,df.format(start));
+userData.put(&quot;name&quot;,&quot;(3) Super &quot;+clazztype+&quot; Onetime Test Kurs with contingent 0, Test contingent!&quot;);
+userData.put(&quot;description&quot;,vars.get(&quot;lorem.long&quot;));
+userData.put(&quot;endAt&quot;,df.format(end));
+userData.put(&quot;activeFrom&quot;,df.format(new Date()));
+userData.put(&quot;activeTill&quot;,&quot;2222-01-30T23:00:00.000Z&quot;);
+userData.put(&quot;tags&quot;,clazztype);
+userData.put(&quot;recurrence&quot;,&quot;weekly&quot;);
+userData.put(&quot;amount&quot;,&quot;10&quot;);
+userData.put(&quot;isActive&quot;,true);
+userData.put(&quot;avatarurl&quot;,&quot;http://localhost:9000${_imageid2_g1}&quot;);
+
+vars.put(&quot;clazz&quot;,mapper.writeValueAsString(userData));
+vars.put(&quot;clazz.name&quot;,userData.get(&quot;name&quot;));
+vars.put(&quot;clazz.amount&quot;,userData.get(&quot;amount&quot;));</stringProp>
+                </BeanShellPreProcessor>
+                <hashTree/>
+                <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+                  <collectionProp name="Asserion.test_strings">
+                    <stringProp name="49587">201</stringProp>
+                  </collectionProp>
+                  <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+                  <boolProp name="Assertion.assume_success">false</boolProp>
+                  <intProp name="Assertion.test_type">1</intProp>
+                </ResponseAssertion>
+                <hashTree/>
+                <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="extract id" enabled="true">
+                  <stringProp name="RegexExtractor.useHeaders">true</stringProp>
+                  <stringProp name="RegexExtractor.refname">_clazzdefid3</stringProp>
                   <stringProp name="RegexExtractor.regex">Location:\s*(.+)</stringProp>
                   <stringProp name="RegexExtractor.template">$1</stringProp>
                   <stringProp name="RegexExtractor.default"></stringProp>
@@ -2552,7 +2642,7 @@ vars.put(&quot;clazz.amount&quot;,userData.get(&quot;amount&quot;));</stringProp
                 </ResponseAssertion>
                 <hashTree/>
               </hashTree>
-              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="get my clazzes" enabled="true">
+              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="get all my clazzes" enabled="true">
                 <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
                 <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
                   <collectionProp name="Arguments.arguments">
@@ -2579,6 +2669,10 @@ vars.put(&quot;clazz.amount&quot;,userData.get(&quot;amount&quot;));</stringProp
                 <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
               </HTTPSamplerProxy>
               <hashTree>
+                <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="wait few ms for clazz generation" enabled="true">
+                  <stringProp name="ConstantTimer.delay">1000</stringProp>
+                </ConstantTimer>
+                <hashTree/>
                 <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
                   <collectionProp name="Asserion.test_strings">
                     <stringProp name="49586">200</stringProp>
@@ -2592,7 +2686,55 @@ vars.put(&quot;clazz.amount&quot;,userData.get(&quot;amount&quot;));</stringProp
                   <collectionProp name="Asserion.test_strings">
                     <stringProp name="-803609111">page&quot;:0</stringProp>
                     <stringProp name="-1960741531">offset&quot;:0</stringProp>
-                    <stringProp name="-849955559">total&quot;:5</stringProp>
+                    <stringProp name="-763465337">total&quot;:\d+</stringProp>
+                  </collectionProp>
+                  <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+                  <boolProp name="Assertion.assume_success">false</boolProp>
+                  <intProp name="Assertion.test_type">2</intProp>
+                </ResponseAssertion>
+                <hashTree/>
+              </hashTree>
+              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="get clazzes by clazz def 1" enabled="true">
+                <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+                <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+                  <collectionProp name="Arguments.arguments">
+                    <elementProp name="" elementType="HTTPArgument">
+                      <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                      <stringProp name="Argument.value"></stringProp>
+                      <stringProp name="Argument.metadata">=</stringProp>
+                    </elementProp>
+                  </collectionProp>
+                </elementProp>
+                <stringProp name="HTTPSampler.domain"></stringProp>
+                <stringProp name="HTTPSampler.port"></stringProp>
+                <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+                <stringProp name="HTTPSampler.response_timeout"></stringProp>
+                <stringProp name="HTTPSampler.protocol">http</stringProp>
+                <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
+                <stringProp name="HTTPSampler.path">${_clazzdefid_g1}/clazzes</stringProp>
+                <stringProp name="HTTPSampler.method">GET</stringProp>
+                <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+                <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+                <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+                <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+                <boolProp name="HTTPSampler.monitor">false</boolProp>
+                <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+              </HTTPSamplerProxy>
+              <hashTree>
+                <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+                  <collectionProp name="Asserion.test_strings">
+                    <stringProp name="49586">200</stringProp>
+                  </collectionProp>
+                  <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+                  <boolProp name="Assertion.assume_success">false</boolProp>
+                  <intProp name="Assertion.test_type">1</intProp>
+                </ResponseAssertion>
+                <hashTree/>
+                <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+                  <collectionProp name="Asserion.test_strings">
+                    <stringProp name="-803609111">page&quot;:0</stringProp>
+                    <stringProp name="-1960741531">offset&quot;:0</stringProp>
+                    <stringProp name="-763465337">total&quot;:\d+</stringProp>
                   </collectionProp>
                   <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
                   <boolProp name="Assertion.assume_success">false</boolProp>
@@ -2600,6 +2742,120 @@ vars.put(&quot;clazz.amount&quot;,userData.get(&quot;amount&quot;));</stringProp
                 </ResponseAssertion>
                 <hashTree/>
                 <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="extract id" enabled="true">
+                  <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+                  <stringProp name="RegexExtractor.refname">_clazzid</stringProp>
+                  <stringProp name="RegexExtractor.regex">&quot;id&quot;:&quot;([0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})</stringProp>
+                  <stringProp name="RegexExtractor.template">$1</stringProp>
+                  <stringProp name="RegexExtractor.default"></stringProp>
+                  <stringProp name="RegexExtractor.match_number">1</stringProp>
+                </RegexExtractor>
+                <hashTree/>
+              </hashTree>
+              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="get clazzes by clazz def 2" enabled="true">
+                <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+                <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+                  <collectionProp name="Arguments.arguments">
+                    <elementProp name="" elementType="HTTPArgument">
+                      <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                      <stringProp name="Argument.value"></stringProp>
+                      <stringProp name="Argument.metadata">=</stringProp>
+                    </elementProp>
+                  </collectionProp>
+                </elementProp>
+                <stringProp name="HTTPSampler.domain"></stringProp>
+                <stringProp name="HTTPSampler.port"></stringProp>
+                <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+                <stringProp name="HTTPSampler.response_timeout"></stringProp>
+                <stringProp name="HTTPSampler.protocol">http</stringProp>
+                <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
+                <stringProp name="HTTPSampler.path">${_clazzdefid2_g1}/clazzes</stringProp>
+                <stringProp name="HTTPSampler.method">GET</stringProp>
+                <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+                <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+                <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+                <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+                <boolProp name="HTTPSampler.monitor">false</boolProp>
+                <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+              </HTTPSamplerProxy>
+              <hashTree>
+                <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+                  <collectionProp name="Asserion.test_strings">
+                    <stringProp name="49586">200</stringProp>
+                  </collectionProp>
+                  <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+                  <boolProp name="Assertion.assume_success">false</boolProp>
+                  <intProp name="Assertion.test_type">1</intProp>
+                </ResponseAssertion>
+                <hashTree/>
+                <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+                  <collectionProp name="Asserion.test_strings">
+                    <stringProp name="-803609111">page&quot;:0</stringProp>
+                    <stringProp name="-1960741531">offset&quot;:0</stringProp>
+                    <stringProp name="-763465337">total&quot;:\d+</stringProp>
+                  </collectionProp>
+                  <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+                  <boolProp name="Assertion.assume_success">false</boolProp>
+                  <intProp name="Assertion.test_type">2</intProp>
+                </ResponseAssertion>
+                <hashTree/>
+                <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="extract id2" enabled="true">
+                  <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+                  <stringProp name="RegexExtractor.refname">_clazzid2</stringProp>
+                  <stringProp name="RegexExtractor.regex">&quot;id&quot;:&quot;([0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})</stringProp>
+                  <stringProp name="RegexExtractor.template">$1</stringProp>
+                  <stringProp name="RegexExtractor.default"></stringProp>
+                  <stringProp name="RegexExtractor.match_number">1</stringProp>
+                </RegexExtractor>
+                <hashTree/>
+              </hashTree>
+              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="get clazzes by clazz def 3" enabled="true">
+                <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+                <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+                  <collectionProp name="Arguments.arguments">
+                    <elementProp name="" elementType="HTTPArgument">
+                      <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                      <stringProp name="Argument.value"></stringProp>
+                      <stringProp name="Argument.metadata">=</stringProp>
+                    </elementProp>
+                  </collectionProp>
+                </elementProp>
+                <stringProp name="HTTPSampler.domain"></stringProp>
+                <stringProp name="HTTPSampler.port"></stringProp>
+                <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+                <stringProp name="HTTPSampler.response_timeout"></stringProp>
+                <stringProp name="HTTPSampler.protocol">http</stringProp>
+                <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
+                <stringProp name="HTTPSampler.path">${_clazzdefid3_g1}/clazzes</stringProp>
+                <stringProp name="HTTPSampler.method">GET</stringProp>
+                <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+                <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+                <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+                <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+                <boolProp name="HTTPSampler.monitor">false</boolProp>
+                <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+              </HTTPSamplerProxy>
+              <hashTree>
+                <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+                  <collectionProp name="Asserion.test_strings">
+                    <stringProp name="49586">200</stringProp>
+                  </collectionProp>
+                  <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+                  <boolProp name="Assertion.assume_success">false</boolProp>
+                  <intProp name="Assertion.test_type">1</intProp>
+                </ResponseAssertion>
+                <hashTree/>
+                <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+                  <collectionProp name="Asserion.test_strings">
+                    <stringProp name="-803609111">page&quot;:0</stringProp>
+                    <stringProp name="-1960741531">offset&quot;:0</stringProp>
+                    <stringProp name="-763465337">total&quot;:\d+</stringProp>
+                  </collectionProp>
+                  <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+                  <boolProp name="Assertion.assume_success">false</boolProp>
+                  <intProp name="Assertion.test_type">2</intProp>
+                </ResponseAssertion>
+                <hashTree/>
+                <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="extract id3" enabled="true">
                   <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                   <stringProp name="RegexExtractor.refname">_clazzid3</stringProp>
                   <stringProp name="RegexExtractor.regex">&quot;id&quot;:&quot;([0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})</stringProp>
@@ -2749,24 +3005,6 @@ vars.put(&quot;clazz.amount&quot;,userData.get(&quot;amount&quot;));</stringProp
                   <intProp name="Assertion.test_type">2</intProp>
                 </ResponseAssertion>
                 <hashTree/>
-                <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="extract id" enabled="true">
-                  <stringProp name="RegexExtractor.useHeaders">false</stringProp>
-                  <stringProp name="RegexExtractor.refname">_clazzid</stringProp>
-                  <stringProp name="RegexExtractor.regex">&quot;id&quot;:&quot;([0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})</stringProp>
-                  <stringProp name="RegexExtractor.template">$1</stringProp>
-                  <stringProp name="RegexExtractor.default"></stringProp>
-                  <stringProp name="RegexExtractor.match_number">1</stringProp>
-                </RegexExtractor>
-                <hashTree/>
-                <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="extract id2" enabled="true">
-                  <stringProp name="RegexExtractor.useHeaders">false</stringProp>
-                  <stringProp name="RegexExtractor.refname">_clazzid2</stringProp>
-                  <stringProp name="RegexExtractor.regex">&quot;id&quot;:&quot;([0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})</stringProp>
-                  <stringProp name="RegexExtractor.template">$1</stringProp>
-                  <stringProp name="RegexExtractor.default"></stringProp>
-                  <stringProp name="RegexExtractor.match_number">2</stringProp>
-                </RegexExtractor>
-                <hashTree/>
               </hashTree>
               <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="register to clazz" enabled="true">
                 <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
@@ -2889,16 +3127,25 @@ vars.put(&quot;clazz.amount&quot;,userData.get(&quot;amount&quot;));</stringProp
               <hashTree>
                 <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
                   <collectionProp name="Asserion.test_strings">
-                    <stringProp name="49587">201</stringProp>
+                    <stringProp name="51508">400</stringProp>
                   </collectionProp>
                   <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
                   <boolProp name="Assertion.assume_success">false</boolProp>
                   <intProp name="Assertion.test_type">1</intProp>
                 </ResponseAssertion>
                 <hashTree/>
+                <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+                  <collectionProp name="Asserion.test_strings">
+                    <stringProp name="-287599721">CONTINGENT_EXCEEDED</stringProp>
+                  </collectionProp>
+                  <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+                  <boolProp name="Assertion.assume_success">false</boolProp>
+                  <intProp name="Assertion.test_type">2</intProp>
+                </ResponseAssertion>
+                <hashTree/>
                 <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="extract id" enabled="true">
                   <stringProp name="RegexExtractor.useHeaders">true</stringProp>
-                  <stringProp name="RegexExtractor.refname">_regid2</stringProp>
+                  <stringProp name="RegexExtractor.refname">_regid3</stringProp>
                   <stringProp name="RegexExtractor.regex">([0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})</stringProp>
                   <stringProp name="RegexExtractor.template">$1</stringProp>
                   <stringProp name="RegexExtractor.default"></stringProp>
@@ -2945,7 +3192,7 @@ vars.put(&quot;clazz.amount&quot;,userData.get(&quot;amount&quot;));</stringProp
                 <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
                   <collectionProp name="Asserion.test_strings">
                     <stringProp name="1240127515">${_regid_g1}</stringProp>
-                    <stringProp name="2121102137">&quot;total&quot;:3</stringProp>
+                    <stringProp name="2121102136">&quot;total&quot;:2</stringProp>
                     <stringProp name="-252499809">${_regid2_g1}</stringProp>
                   </collectionProp>
                   <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
@@ -3029,7 +3276,7 @@ vars.put(&quot;clazz.amount&quot;,userData.get(&quot;amount&quot;));</stringProp
                 <hashTree/>
                 <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
                   <collectionProp name="Asserion.test_strings">
-                    <stringProp name="2121102136">&quot;total&quot;:2</stringProp>
+                    <stringProp name="2121102135">&quot;total&quot;:1</stringProp>
                   </collectionProp>
                   <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
                   <boolProp name="Assertion.assume_success">false</boolProp>
