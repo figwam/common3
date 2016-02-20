@@ -75,7 +75,8 @@ trait ClazzService  {
     */
   def listPersonalizedMy(page: Int = 0, pageSize: Int = 10, sortBy: Int = 1, filter: String = "%", idUser: UUID, startFrom: Timestamp, endAt: Timestamp): Future[Page]
 
-  def clazzesByClazzDef(idClazzDef: UUID): Future[Page]
+  def clazzesByClazzDef(page: Int = 0, pageSize: Int = 10, sortBy: Int = 1, idClazzDef: UUID): Future[Page]
+
   def count: Future[Int]
   def count(filter: String): Future[Int]
 
@@ -102,21 +103,27 @@ abstract class ClazzServiceImpl @Inject() (protected val dbConfigProvider: Datab
   override def count(filter: String): Future[Int] =
     db.run(slickClazzViews.filter(_.startFrom >= new Timestamp(System.currentTimeMillis())).filter(_.searchMeta.toLowerCase like filter.toLowerCase).length.result)
 
-  def clazzesByClazzDef(idClazzDef: UUID): Future[Page] = {
+  def clazzesByClazzDef(page: Int = 0, pageSize: Int = 10, sortBy: Int = 1, idClazzDef: UUID): Future[Page] = {
+
+    val offset = if (page > 0) pageSize * page else 0
+
     val clazzAction = for {
       c <- slickClazzViews.filter(_.idClazzDef === idClazzDef)
       s <- slickStudios.filter(_.id === c.idStudio)
       a <- slickAddresses.filter(_.id === s.idAddress)
     } yield (c, s, a)
 
-    db.run(clazzAction.result).map { clazz => //result is Seq[DBClazz]
+    val totalRows = db.run(slickClazzes.filter(_.idClazzDef === idClazzDef).length.result)
+
+
+    db.run(clazzAction.sortBy(_._1.startFrom).drop(offset).take(pageSize).result).map { clazz =>
       clazz.map {
         // go through all the DBClazzes and map them to Clazz
         case (clazz, studio, addressS)  => {
           entity2model(clazz, studio, addressS)
         }
       } // The result is Seq[Clazz] flapMap (works with Clazz) these to Page
-    }.flatMap (c3 => Future.successful(Page(c3, 0, 0L, 0L)))
+    }.flatMap (c3 => totalRows.map (rows => Page(c3, page, offset.toLong, rows.toLong)))
   }
 
   override def list(page: Int = 0, pageSize: Int = 10, sortBy: Int = 1, filter: String = "%"): Future[Page] = {

@@ -9,7 +9,7 @@ import play.api.libs.json.Json
 import scala.concurrent.Future
 
 
-trait User extends Identity with Model {
+trait User extends Identity with AbstractModel {
     override val id: Option[UUID] = None
     val firstname: Option[String] = None
     val lastname: Option[String] = None

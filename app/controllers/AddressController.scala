@@ -29,65 +29,39 @@ class AddressController @Inject()(
                                        val env: Environment[User, JWTAuthenticator],
                                        socialProviderRegistry: SocialProviderRegistry,
                                        service: AddressService)
-  extends Silhouette[User, JWTAuthenticator] {
+  extends AbstractController {
 
-  def create = SecuredAction.async(parse.json) { implicit request =>
-    validateUpsert(None, service.create)
+  import utils.FormValidator.Address._
+
+  def retrieve(id: UUID) = UserAwareAction.async { implicit request =>
+    retrieveById(id, service.retrieve)
   }
 
 
-  def retrieve(id: UUID) = SecuredAction.async { implicit request =>
-    service.retrieve(id).flatMap { o =>
-      o.fold(Future.successful(NotFound(Json.obj("message" -> Messages("object.not.found")))))(c => Future.successful(Ok(Json.toJson(c))))
-    }
+  def retrieveOwn(id: UUID) = SecuredAction.async { implicit request =>
+    retrieveByOwner(id, request.identity.id.get, service.retrieveByOwner)
   }
 
-  def update(id: UUID) = SecuredAction.async(parse.json) { implicit request =>
-    validateUpsert(Some(id), service.update)
-  }
-
-  def delete(id: UUID) = SecuredAction.async { implicit request =>
-    service.delete(id).flatMap { r => r match {
-      case 0 => Future.successful(NotFound(Json.obj("message" -> Messages("object.not.found"))))
-      case 1 => Future.successful(Ok)
-      case _ => Logger.error("WTH?!? We expect NO or exactly one unique result here")
-        Future.successful(InternalServerError);
-    }
-    }
-  }
-
-  def retrieveByOwner(id: UUID)= SecuredAction.async { implicit request =>
-    service.retrieveByOwner(id, request.identity.id.get).flatMap { o =>
-      o.fold(Future.successful(NotFound(Json.obj("message" -> Messages("object.not.found")))))(c => Future.successful(Ok(Json.toJson(c))))
-    }
-  }
-
-  def updateByOwner(id: UUID) = SecuredAction.async(parse.json) { implicit request =>
-    service.retrieveByOwner(id, request.identity.id.get).flatMap { o =>
-      o.fold(Future.successful(NotFound(Json.obj("message" -> Messages("object.not.found")))))(c => validateUpsert(Some(id), service.update))
-    }
-  }
-
-  def validateUpsert(id: Option[UUID], dbAction: Address => Future[Address])(implicit request: SecuredRequest[JsValue]): Future[Result] = {
-    request.body.validate[FormValidator.Address] match {
-      case error: JsError => {
-        Future.successful(BadRequest(Json.obj("message" -> Messages("save.fail"), "detail" -> JsError.toJson(error))))
+  def updateOwn(id: UUID) = SecuredAction.async(parse.json) { implicit request =>
+    // call the retrieve by owner function first, if we get a result "Ok", it means the
+    // logged in user owns the resource he wants to update, allow update, otherwise "NotFound"
+    // will be returned
+    retrieveByOwner(id, request.identity.id.get, service.retrieveByOwner).flatMap ( r => r match {
+      case Result(h,_,_) if h.status == play.api.http.Status.OK => {
+        // add server side ids to the request JSON (logged in user, the id)
+        val requestEnrichment = List(("id", id.toString), ("idPartner", request.identity.id.get.toString),("idTrainee", request.identity.id.get.toString))
+        validateUpsert(Some(requestEnrichment), service.update)
       }
-      case s: JsSuccess[FormValidator.Address] => {
-        request.body.validate[Address].map { obj =>
-          dbAction(obj.copy(id=id)).flatMap {
-            case o:Address =>
-              Future.successful(Ok(Json.obj("message" -> Messages("save.ok"))))
-            case _ =>
-              logger.error("Updating or Creating Object failed")
-              Future.successful(InternalServerError(Json.obj("message" -> Messages("save.fail"))))
-          }
-        }.recoverTotal {
-          case error =>
-            Future.successful(BadRequest(Json.obj("message" -> "invalid.data", "detail" -> JsError.toJson(error))))
-        }
-      }
-    }
+    })
+  }
+
+  def deleteOwn(id: UUID) = SecuredAction.async { implicit request =>
+    // call the retrieve by owner function first, if we get a result "Ok", it means the
+    // logged in user owns the resource he wants to delete, allow delete, otherwise "NotFound"
+    // will be returned
+    retrieveByOwner(id, request.identity.id.get, service.retrieveByOwner).flatMap ( r => r match {
+      case Result(h,_,_) if h.status == play.api.http.Status.OK => deleteById(id, service.delete)
+    })
   }
 
 }

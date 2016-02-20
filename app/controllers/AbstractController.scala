@@ -4,7 +4,7 @@ import java.util.UUID
 
 import com.mohiva.play.silhouette.api.Silhouette
 import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
-import models.{Model, User}
+import models.{AbstractModel, User}
 import org.postgresql.util.PSQLException
 import play.api.Logger
 import play.api.i18n.Messages
@@ -31,7 +31,7 @@ abstract class AbstractController extends Silhouette[User, JWTAuthenticator]{
     * @tparam T
     * @return
     */
-  protected def validateUpsert[F,T](enrich: Option[List[Tuple2[String,String]]], dbAction: T => Future[T])(implicit request: SecuredRequest[JsValue], r: Reads[F], rr: Reads[T]): Future[Result] = {
+  protected def validateUpsert[F,T](enrich: Option[List[Tuple2[String,String]]], dbAction: T => Future[Any])(implicit request: SecuredRequest[JsValue], r: Reads[F], rr: Reads[T]): Future[Result] = {
     // validate the object against the form, which can differ from internal object model
     // e.g. the client form does not have the ID of owner
     request.body.validate[F] match {
@@ -51,12 +51,12 @@ abstract class AbstractController extends Silhouette[User, JWTAuthenticator]{
           enrichedJson.validate[T].map { obj =>
             dbAction(obj).map{
               // execute the action on the object and return the created Response
-              case o if o.isInstanceOf[Model] => {
-                  o.asInstanceOf[Model].id.get
+              case o if o.isInstanceOf[AbstractModel] => {
+                  o.asInstanceOf[AbstractModel].id.get
                   Created(Json.obj("message" -> Messages("save.ok")))
-                    .withHeaders(("Location", request.path + "/" + o.asInstanceOf[Model].id.get))
+                    .withHeaders(("Location", request.path + "/" + o.asInstanceOf[AbstractModel].id.get))
               }
-              case o if !o.isInstanceOf[Model] =>
+              case o if o.isInstanceOf[Int] && o.asInstanceOf[Int] == 1  =>
                 Ok(Json.obj("message" -> Messages("save.ok")))
             }.recover {
               case ex:PSQLException if ex.getMessage.contains("CONTINGENT_EXCEEDED") =>
@@ -78,14 +78,24 @@ abstract class AbstractController extends Silhouette[User, JWTAuthenticator]{
     }
   }
 
-  protected def validateDelete[T](id: UUID, owner: Option[UUID], dbAction: (UUID,Option[UUID]) => Future[Int]): Future[Result] = {
-    dbAction(id,owner).flatMap { r => r match {
-        case 0 => Future.successful(NotFound(Json.obj("message" -> Messages("object.not.found"))))
-        case 1 => Future.successful(Ok)
-        case _ => Logger.error("WTH?!? We expect NO or exactly one unique result here")
-          Future.successful(InternalServerError);
-      }
-    }
+  protected def retrieveById[T](id: UUID, dbAction: (UUID) => Future[Option[T]])(implicit r: Reads[T], w: Writes[T]): Future[Result] = {
+    dbAction(id).flatMap(o => retrieveResponse(o))
   }
+
+  protected def retrieveByOwner[T](id: UUID, owner: UUID, dbAction: (UUID, UUID) => Future[Option[T]])(implicit r: Reads[T], w: Writes[T]): Future[Result] = {
+    dbAction(id, owner).flatMap(o => retrieveResponse(o))
+  }
+
+  protected def deleteById[T](id: UUID, dbAction: (UUID) => Future[Int]): Future[Result] = {
+    dbAction(id).flatMap(r => r match {
+      case 0 => Future.successful(NotFound(Json.obj("message" -> Messages("object.not.found"))))
+      case 1 => Future.successful(Ok)
+      case _ => Logger.error("WTH?!? We expect NO or exactly one unique result here")
+        Future.successful(InternalServerError)
+    })
+  }
+
+  private def retrieveResponse[T](o: Option[T])(implicit r: Reads[T], w: Writes[T]) =
+    o.fold(Future.successful(NotFound(Json.obj("message" -> Messages("object.not.found")))))(c => Future.successful(Ok(Json.toJson(c))))
 
 }

@@ -7,9 +7,9 @@ import com.mohiva.play.silhouette.api.Environment
 import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import models._
-import play.api.Logger
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.libs.json.{JsObject, Json}
+import play.api.i18n.{MessagesApi}
+import play.api.libs.json.{Json}
+import play.api.mvc.Result
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -42,8 +42,13 @@ class RegistrationController @Inject()(
     validateUpsert(Some(requestEnrichment),service.create)
   }
 
-  def delete(id: UUID) = SecuredAction.async { implicit request =>
-    validateDelete(id, request.identity.id, service.delete)
+  def deleteOwn(id: UUID) = SecuredAction.async { implicit request =>
+    // call the retrieve by owner function first, if we get a result "Ok", it means the
+    // logged in user owns the resource he wants to delete, allow delete, otherwise "NotFound"
+    // will be returned
+    retrieveByOwner(id, request.identity.id.get, service.retrieveByOwner).flatMap ( r => r match {
+      case Result(h,_,_) if h.status == play.api.http.Status.OK => deleteById(id, service.delete)
+    })
   }
 
 }

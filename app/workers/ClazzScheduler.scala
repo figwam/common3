@@ -4,22 +4,20 @@ import java.util.UUID
 import javax.inject.{Inject, Singleton}
 
 import akka.actor.{Actor, Cancellable}
-import models.{ClazzService, ClazzDefinitionService, Clazz}
+import models.{Clazz, ClazzDefinitionService, ClazzService}
 import org.postgresql.util.PSQLException
 import play.api.{Configuration, Logger}
 import play.libs.Json
-import scala.concurrent.duration._
-
 import utils._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
 
 /**
- * Created by alex on 27/09/15.
- */
+  * Created by alex on 27/09/15.
+  */
+@Singleton
 class ClazzScheduler @Inject()(conf: Configuration, cService: ClazzService, cdService: ClazzDefinitionService) extends Actor {
-
 
 
   private val CREATE_CLAZZES = "CREATE_CLAZZES"
@@ -28,7 +26,7 @@ class ClazzScheduler @Inject()(conf: Configuration, cService: ClazzService, cdSe
 
   override def preStart(): Unit = {
     import scala.concurrent.duration._
-    lazy val refreshInterval:Int = conf.getInt("clazz.definition.refresh.intervall").getOrElse(10)
+    lazy val refreshInterval: Int = conf.getInt("clazz.definition.refresh.intervall").getOrElse(10)
     scheduler = context.system.scheduler.schedule(
       initialDelay = refreshInterval.seconds,
       interval = refreshInterval.seconds,
@@ -38,7 +36,6 @@ class ClazzScheduler @Inject()(conf: Configuration, cService: ClazzService, cdSe
   }
 
 
-
   override def postStop(): Unit = {
     scheduler.cancel()
   }
@@ -46,32 +43,33 @@ class ClazzScheduler @Inject()(conf: Configuration, cService: ClazzService, cdSe
   def receive = {
     case CREATE_CLAZZES =>
       try {
-        Logger.info("Execute Cron "+CREATE_CLAZZES)
-        lazy val seeInAdvanceDays:Int = conf.getInt("days.see.clazzes.in.advance").getOrElse(7)
-        val clazzes =  cdService.listActive()
-        Logger.info("Execute Cron "+CREATE_CLAZZES+":"+Json.toJson(clazzes))
+        Logger.info("Execute Cron " + CREATE_CLAZZES)
+        lazy val seeInAdvanceDays: Int = conf.getInt("days.see.clazzes.in.advance").getOrElse(7)
+        val clazzes = cdService.listActive()
+        Logger.info("Execute Cron " + CREATE_CLAZZES + ":" + Json.toJson(clazzes))
         clazzes.map { clazzDef =>
           clazzDef.map { clazzDef =>
-            Logger.debug(clazzDef.id+"-"+clazzDef.recurrence)
-            Utils.calculateNextClazzes(clazzDef, seeInAdvanceDays).map( clazz =>
+            Logger.debug(clazzDef.id + "-" + clazzDef.recurrence)
+            Utils.calculateNextClazzes(clazzDef, seeInAdvanceDays).map(clazz =>
               clazz match {
                 case clazz: Clazz => {
                   clazzDef.id match {
-                    case idClazzDef:Some[UUID] => {
-                      val future = cService.create(clazz.copy(idClazzDef=idClazzDef.get)).map(c => Logger.debug("Create clazzes inserted, with id="+c.id))
+                    case idClazzDef: Some[UUID] => {
+                      val future = cService.create(clazz.copy(idClazzDef = idClazzDef.get)).map(c => Logger.debug("Create clazzes inserted, with id=" + c.id))
                       future.onSuccess { case a => Logger.debug(s"Class created: $a") }
                       future.onFailure {
                         case t: PSQLException => {
                           if (t.getMessage.contains("duplicate key value violates unique constraint")) Logger.debug("Class already exists")
                           else Logger.error("Something bad happened", t)
                         }
-                        case t: Throwable => Logger.error(t.getMessage,t)
+                        case t: Throwable => Logger.error(t.getMessage, t)
                       }
                     }
-                    case _ => UUID.randomUUID()}
+                    case _ => UUID.randomUUID()
+                  }
 
                 }
-                case _ => Logger.warn("outdated clazz definition found, id="+clazzDef.id)
+                case _ => Logger.warn("outdated clazz definition found, id=" + clazzDef.id)
               }
             )
             /*
@@ -101,12 +99,12 @@ class ClazzScheduler @Inject()(conf: Configuration, cService: ClazzService, cdSe
           }
 
         }
-        Logger.info("Finished Cron "+CREATE_CLAZZES+":"+Json.toJson(clazzes))
-        clazzes.onSuccess { case a => Logger("Classes created")/*case a => Logger.debug(s"Classes created: $a")*/ }
-        clazzes.onFailure { case t: Throwable => Logger.error(t.getMessage,t) }
+        Logger.info("Finished Cron " + CREATE_CLAZZES + ":" + Json.toJson(clazzes))
+        clazzes.onSuccess { case a => Logger("Classes created") /*case a => Logger.debug(s"Classes created: $a")*/}
+        clazzes.onFailure { case t: Throwable => Logger.error(t.getMessage, t) }
       } catch {
         case t: Throwable =>
-          Logger.error(t.getMessage,t)
+          Logger.error(t.getMessage, t)
       }
   }
 

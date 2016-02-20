@@ -5,7 +5,6 @@ import java.sql.Timestamp
 import java.util.UUID
 
 import com.mohiva.play.silhouette.api.LoginInfo
-import models._
 import play.Play
 import play.api.libs.json._
 import slick.driver.JdbcProfile
@@ -783,8 +782,8 @@ trait DBTableDefinitions {
     *
     *
     */
-  val vat = BigDecimal(Play.application().configuration().getDouble("vat"))
-  val currency = Play.application().configuration().getString("currency")
+  lazy val vat = BigDecimal(Play.application().configuration().getDouble("vat"))
+  lazy val currency = Play.application().configuration().getString("currency")
 
   def model2entity(address: Address): DBAddress =  DBAddress( address.id, address.street, address.zip, address.city, address.state, address.country, new Timestamp(System.currentTimeMillis), new Timestamp(System.currentTimeMillis), false, address.longitude, address.latitude)
   def entity2model(address: DBAddress): Address = Address( address.id, address.street, address.city, address.zip, address.state, address.country, address.longitude, address.latitude)

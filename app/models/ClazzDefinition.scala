@@ -28,7 +28,7 @@ object Type extends Enumeration {
 }
 
 case class ClazzDefinition(
-                            id: Option[UUID],
+                            override val id: Option[UUID],
                             startFrom: Calendar,
                             endAt: Calendar,
                             activeFrom: Calendar,
@@ -43,7 +43,7 @@ case class ClazzDefinition(
                             amount: scala.math.BigDecimal,
                             vat: Option[scala.math.BigDecimal],
                             currency: Option[String],
-                            idStudio: Option[UUID])
+                            idStudio: Option[UUID]) extends AbstractModel
 
 
 /**
@@ -64,30 +64,10 @@ object ClazzDefinition {
 
 }
 
-trait ClazzDefinitionService extends DAOSlick {
+trait ClazzDefinitionService extends DAOSlick with AbstractService[ClazzDefinition]{
 
-
-
-  def create(clazz: ClazzDefinition): Future[ClazzDefinition]
-  def retrieve(id: UUID): Future[Option[ClazzDefinition]]
-  def update (clazz: ClazzDefinition): Future[ClazzDefinition]
-  def delete(id: UUID): Future[Int]
-
-  //  def update(id: Long, clazz: ClazzDefinition): Future[Int]
-  //  def delete(id: Long): Future[Int]
   def listActive(): Future[Seq[ClazzDefinition]]
-  //  def findById(id: Long): Future[ClazzDefinition]
   def count: Future[Int]
-
-  /**
-    * Lists all clazz definitions
-    *
-    * @param page
-    * @param pageSize
-    * @param orderBy
-    * @param idPartner
-    * @return
-    */
   def listByPartner(page: Int = 0, pageSize: Int = 10, orderBy: Int = 1, idPartner: UUID): Future[PageClazzDefinition]
 }
 
@@ -115,14 +95,14 @@ class ClazzDefinitionServiceImpl @Inject() (protected val dbConfigProvider: Data
   }
 
 
-  override def update(cl: ClazzDefinition): Future[ClazzDefinition] = {
+  override def update(cl: ClazzDefinition): Future[Int] = {
     val q = for {c <- slickClazzDefinitions if c.id === cl.id} yield
       (c.startFrom, c.endAt, c.activeFrom, c.activeTill,
         c.name, c.recurrence, c.contingent, c.updatedOn,
         c.avatarurl, c.description, c.tags, c.isActive, c.amount)
     db.run(q.update(asTimestamp(cl.startFrom), asTimestamp(cl.endAt), asTimestamp(cl.activeFrom), asTimestamp(cl.activeTill),
       cl.name, cl.recurrence + "", cl.contingent, new Timestamp(System.currentTimeMillis()),
-      cl.avatarurl.map(_.toString()), cl.description, Some(cl.tags.getOrElse("") + ""), cl.isActive, cl.amount)).map(_ => cl)
+      cl.avatarurl.map(_.toString()), cl.description, Some(cl.tags.getOrElse("") + ""), cl.isActive, cl.amount))
   }
 
 
@@ -169,5 +149,13 @@ class ClazzDefinitionServiceImpl @Inject() (protected val dbConfigProvider: Data
       } // The result is Seq[Clazz] flapMap (works with Clazz) these to Page
     }.flatMap(c3 => totalRows.map(rows => PageClazzDefinition(c3, page, offset.toLong, rows.toLong)))
 
+  }
+
+  override def retrieveByOwner(id: UUID, owner: UUID): Future[Option[ClazzDefinition]] = {
+    val action = for {
+      studio <- slickStudios.filter(_.idPartner === owner)
+      clazzDef <- slickClazzDefinitions.filter(_.idStudio === studio.id).filter(_.id === id)
+    } yield (clazzDef)
+    db.run(action.result.headOption).map(o => o.map(c => entity2model(c)))
   }
 }

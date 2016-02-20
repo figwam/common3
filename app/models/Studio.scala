@@ -12,7 +12,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 
 case class Studio (
-                   id: Option[UUID] = None,
+                   override val id: Option[UUID] = None,
                    name: String,
                    mobile: Option[String] = None,
                    phone: Option[String] = None,
@@ -22,7 +22,7 @@ case class Studio (
                    sporttype: Option[String] = None,
                    idAddress: Option[UUID] = None,
                    address: Option[Address] = None,
-                   idPartner: Option[UUID] = None)
+                   idPartner: Option[UUID] = None) extends AbstractModel
 
 /**
  * The companion object.
@@ -37,16 +37,7 @@ object Studio {
   implicit val jsonFormat = Json.format[Studio]
 }
 
-trait StudioService extends DBTableDefinitions {
-
-  // CRUD
-  def create(obj: Studio): Future[Studio]
-  def retrieveByOwner(owner: UUID): Future[Option[Studio]]
-  def update (objIn: Studio): Future[Studio]
-  def deleteByOwner(owner: UUID): Future[Int]
-
-}
-
+trait StudioService extends DBTableDefinitions with AbstractService[Studio]
 
 
 /**
@@ -70,22 +61,24 @@ class StudioServiceImpl @Inject()(protected val dbConfigProvider: DatabaseConfig
     db.run(actions).map(s => obj.copy(id=s.id))
   }
 
-  override def retrieveByOwner(owner: UUID): Future[Option[Studio]] = {
-    db.run(slickStudios.filter(_.idPartner === owner).result.headOption).map(obj => obj.map(o => entity2model(o)))
+  override def retrieve(id: UUID): Future[Option[Studio]] = {
+    db.run(slickStudios.filter(_.id===id).result.headOption).map(obj => obj.map(o => entity2model(o)))
   }
 
-  override def update(objIn: Studio): Future[Studio] = {
+  override def update(objIn: Studio): Future[Int] = {
     val q = for {
-      obj <- slickStudios if obj.idPartner === objIn.idPartner
+      obj <- slickStudios if obj.idPartner === objIn.idPartner if obj.id === objIn.id
     } yield
       (obj.name, obj.mobile, obj.phone, obj.email, obj.avatarurl, obj.description, obj.sporttype,
         obj.updatedOn)
     db.run(q.update(objIn.name, objIn.mobile, objIn.phone, objIn.email, objIn.avatarurl, objIn.description, objIn.sporttype,
-      new Timestamp(System.currentTimeMillis()))).map(_ => objIn)
+      new Timestamp(System.currentTimeMillis())))
   }
 
 
-  override def deleteByOwner(owner: UUID): Future[Int] = db.run(slickStudios.filter(_.idPartner === owner).delete)
+  override def delete(id: UUID): Future[Int] = db.run(slickStudios.filter(_.id===id).delete)
 
-
+  override def retrieveByOwner(id: UUID, owner: UUID): Future[Option[Studio]] = {
+    db.run(slickStudios.filter(_.idPartner === owner).filter(_.id===id).result.headOption).map(obj => obj.map(o => entity2model(o)))
+  }
 }

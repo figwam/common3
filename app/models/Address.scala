@@ -12,7 +12,7 @@ import scala.concurrent.Future
 
 
 case class Address(
-                    id: Option[UUID],
+                    override val id: Option[UUID],
                     street: String,
                     city: String,
                     zip: String,
@@ -20,7 +20,7 @@ case class Address(
                     country: String,
                     longitude: Option[scala.math.BigDecimal] = None,
                     latitude: Option[scala.math.BigDecimal] = None
-                  )
+                  ) extends AbstractModel
 
 /**
  * The companion object.
@@ -33,21 +33,7 @@ object Address {
   implicit val jsonFormat = Json.format[Address]
 }
 
-trait AddressService extends DBTableDefinitions {
-
-  // CRUD Addresses in general
-  def create(obj: Address): Future[Address]
-  def retrieve(id: UUID): Future[Option[Address]]
-  def update (objIn: Address): Future[Address]
-  def delete(id: UUID): Future[Int]
-  def retrieveByOwner(id: UUID, owner: UUID): Future[Option[Address]]
-
-  /*
-  def retrieve(id: UUID, uid: UUID): Future[Option[Address]]
-  def update(objIn: Address, uid: UUID): Future[Address]
-  */
-
-}
+trait AddressService extends DBTableDefinitions with AbstractService[Address]
 
 
 
@@ -72,12 +58,12 @@ abstract class AddressServiceImpl @Inject()(protected val dbConfigProvider: Data
   }
 
 
-  override def update(objIn: Address): Future[Address] = {
+  override def update(objIn: Address): Future[Int] = {
     val q = for {obj <- slickAddresses if obj.id === objIn.id} yield
       (obj.street, obj.zip, obj.city, obj.state, obj.country,
         obj.updatedOn)
     db.run(q.update(objIn.street, objIn.zip, objIn.city, objIn.state, objIn.country,
-      new Timestamp(System.currentTimeMillis()))).map(_ => objIn)
+      new Timestamp(System.currentTimeMillis())))
   }
 
 

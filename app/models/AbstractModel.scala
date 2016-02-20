@@ -3,6 +3,6 @@ package models
 import java.util.UUID
 
 
-trait Model{
+trait AbstractModel{
     val id: Option[UUID] = None
 }

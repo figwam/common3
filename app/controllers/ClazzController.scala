@@ -63,8 +63,8 @@ class ClazzController @Inject()(
 
 
 
-  def clazzesByClazzDef(id: UUID) = SecuredAction.async { implicit request =>
-    cService.clazzesByClazzDef(id).flatMap { pageClazzes =>
+  def clazzesByClazzDef(page: Int, orderBy: Int, id: UUID) = SecuredAction.async { implicit request =>
+    cService.clazzesByClazzDef(page,10,1,id).flatMap { pageClazzes =>
       Future.successful(Ok(Json.toJson(pageClazzes)))
     }.recover {
       case ex: TimeoutException =>
