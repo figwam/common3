@@ -52,6 +52,7 @@ class AddressController @Inject()(
         val requestEnrichment = List(("id", id.toString), ("idPartner", request.identity.id.get.toString),("idTrainee", request.identity.id.get.toString))
         validateUpsert(Some(requestEnrichment), service.update)
       }
+      case _ => Future.successful(r)
     })
   }
 
@@ -61,6 +62,7 @@ class AddressController @Inject()(
     // will be returned
     retrieveByOwner(id, request.identity.id.get, service.retrieveByOwner).flatMap ( r => r match {
       case Result(h,_,_) if h.status == play.api.http.Status.OK => deleteById(id, service.delete)
+      case _ => Future.successful(r)
     })
   }
 

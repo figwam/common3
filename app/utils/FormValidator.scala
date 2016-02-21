@@ -37,6 +37,16 @@ object FormValidator {
       )(ClazzDef.apply _)
   }
 
+  case class ClazzDefCreate(name: String, description: String, idStudio: String)
+
+  object ClazzDefCreate {
+    implicit val clazzDefReads = (
+      (__ \ 'name).read[String](minLength[String](1)) and
+        (__ \ 'description).read[String](minLength[String](1)) and
+          (__ \ 'idStudio).read[String](verifying[String](_.matches("[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}")))
+      )(ClazzDefCreate.apply _)
+  }
+
 
   case class Studio(name: String, description: String, address: Address)
 

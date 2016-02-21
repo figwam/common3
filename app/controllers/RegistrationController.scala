@@ -48,6 +48,7 @@ class RegistrationController @Inject()(
     // will be returned
     retrieveByOwner(id, request.identity.id.get, service.retrieveByOwner).flatMap ( r => r match {
       case Result(h,_,_) if h.status == play.api.http.Status.OK => deleteById(id, service.delete)
+      case _ => Future.successful(r)
     })
   }
 

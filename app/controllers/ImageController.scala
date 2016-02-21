@@ -34,7 +34,7 @@ class ImageController @Inject()(
 
   lazy val name = Play.application().configuration().getString("cloudinary.name")
 
-  def create = UserAwareAction.async(parse.json) { implicit request =>
+  def create = SecuredAction.async(parse.json) { implicit request =>
     request.body.validate[FormValidator.Image] match {
       case error: JsError => {
         Future.successful(BadRequest(Json.obj("message" -> Messages("save.fail"), "detail" -> JsError.toJson(error))))
@@ -79,7 +79,7 @@ class ImageController @Inject()(
   }
 
 
-  def delete(id: UUID) = UserAwareAction.async { implicit request =>
+  def delete(id: UUID) = SecuredAction.async { implicit request =>
     imageService.deleteAsync(id)
     Future.successful(Ok("OK"))
   }

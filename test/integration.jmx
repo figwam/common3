@@ -389,7 +389,7 @@ if (ResponseCode != null &amp;&amp; ResponseCode.equals (&quot;200&quot;) == fal
 } else {
     try
     {
-    		JsonNode fstabSchema = JsonLoader.fromString(&quot;{\&quot;type\&quot;:\&quot;object\&quot;,\&quot;properties\&quot;:{\&quot;id\&quot;:{\&quot;id\&quot;:\&quot;id\&quot;,\&quot;type\&quot;:\&quot;string\&quot;},\&quot;loginInfo\&quot;:{\&quot;id\&quot;:\&quot;loginInfo\&quot;,\&quot;type\&quot;:\&quot;object\&quot;,\&quot;properties\&quot;:{\&quot;providerID\&quot;:{\&quot;id\&quot;:\&quot;providerID\&quot;,\&quot;type\&quot;:\&quot;string\&quot;},\&quot;providerKey\&quot;:{\&quot;id\&quot;:\&quot;providerKey\&quot;,\&quot;type\&quot;:\&quot;string\&quot;}}},\&quot;firstname\&quot;:{\&quot;id\&quot;:\&quot;firstname\&quot;,\&quot;type\&quot;:\&quot;string\&quot;},\&quot;lastname\&quot;:{\&quot;id\&quot;:\&quot;lastname\&quot;,\&quot;type\&quot;:\&quot;string\&quot;},\&quot;mobile\&quot;:{\&quot;id\&quot;:\&quot;mobile\&quot;,\&quot;type\&quot;:\&quot;string\&quot;},\&quot;phone\&quot;:{\&quot;id\&quot;:\&quot;phone\&quot;,\&quot;type\&quot;:\&quot;string\&quot;},\&quot;email\&quot;:{\&quot;id\&quot;:\&quot;email\&quot;,\&quot;type\&quot;:\&quot;string\&quot;},\&quot;emailVerified\&quot;:{\&quot;id\&quot;:\&quot;emailVerified\&quot;,\&quot;type\&quot;:\&quot;boolean\&quot;},\&quot;createdOn\&quot;:{\&quot;id\&quot;:\&quot;createdOn\&quot;,\&quot;type\&quot;:\&quot;string\&quot;},\&quot;updatedOn\&quot;:{\&quot;id\&quot;:\&quot;updatedOn\&quot;,\&quot;type\&quot;:\&quot;string\&quot;},\&quot;isActive\&quot;:{\&quot;id\&quot;:\&quot;isActive\&quot;,\&quot;type\&quot;:\&quot;boolean\&quot;},\&quot;username\&quot;:{\&quot;id\&quot;:\&quot;username\&quot;,\&quot;type\&quot;:\&quot;string\&quot;},\&quot;fullname\&quot;:{\&quot;id\&quot;:\&quot;fullname\&quot;,\&quot;type\&quot;:\&quot;string\&quot;},\&quot;avatarurl\&quot;:{\&quot;id\&quot;:\&quot;avatarurl\&quot;,\&quot;type\&quot;:\&quot;string\&quot;},\&quot;idAddress\&quot;:{\&quot;id\&quot;:\&quot;idAddress\&quot;,\&quot;type\&quot;:\&quot;string\&quot;}},\&quot;required\&quot;:[\&quot;id\&quot;,\&quot;firstname\&quot;,\&quot;lastname\&quot;,\&quot;email\&quot;,\&quot;emailVerified\&quot;,\&quot;createdOn\&quot;,\&quot;updatedOn\&quot;,\&quot;isActive\&quot;,\&quot;username\&quot;,\&quot;fullname\&quot;,\&quot;idAddress\&quot;]}&quot;);
+    		JsonNode fstabSchema = JsonLoader.fromString(&quot;{\&quot;type\&quot;:\&quot;object\&quot;,\&quot;properties\&quot;:{\&quot;id\&quot;:{\&quot;id\&quot;:\&quot;id\&quot;,\&quot;type\&quot;:\&quot;string\&quot;},\&quot;loginInfo\&quot;:{\&quot;id\&quot;:\&quot;loginInfo\&quot;,\&quot;type\&quot;:\&quot;object\&quot;,\&quot;properties\&quot;:{\&quot;providerID\&quot;:{\&quot;id\&quot;:\&quot;providerID\&quot;,\&quot;type\&quot;:\&quot;string\&quot;},\&quot;providerKey\&quot;:{\&quot;id\&quot;:\&quot;providerKey\&quot;,\&quot;type\&quot;:\&quot;string\&quot;}}},\&quot;firstname\&quot;:{\&quot;id\&quot;:\&quot;firstname\&quot;,\&quot;type\&quot;:\&quot;string\&quot;},\&quot;lastname\&quot;:{\&quot;id\&quot;:\&quot;lastname\&quot;,\&quot;type\&quot;:\&quot;string\&quot;},\&quot;mobile\&quot;:{\&quot;id\&quot;:\&quot;mobile\&quot;,\&quot;type\&quot;:\&quot;string\&quot;},\&quot;phone\&quot;:{\&quot;id\&quot;:\&quot;phone\&quot;,\&quot;type\&quot;:\&quot;string\&quot;},\&quot;email\&quot;:{\&quot;id\&quot;:\&quot;email\&quot;,\&quot;type\&quot;:\&quot;string\&quot;},\&quot;emailVerified\&quot;:{\&quot;id\&quot;:\&quot;emailVerified\&quot;,\&quot;type\&quot;:\&quot;boolean\&quot;},\&quot;createdOn\&quot;:{\&quot;id\&quot;:\&quot;createdOn\&quot;,\&quot;type\&quot;:\&quot;string\&quot;},\&quot;updatedOn\&quot;:{\&quot;id\&quot;:\&quot;updatedOn\&quot;,\&quot;type\&quot;:\&quot;string\&quot;},\&quot;isActive\&quot;:{\&quot;id\&quot;:\&quot;isActive\&quot;,\&quot;type\&quot;:\&quot;boolean\&quot;},\&quot;username\&quot;:{\&quot;id\&quot;:\&quot;username\&quot;,\&quot;type\&quot;:\&quot;string\&quot;},\&quot;fullname\&quot;:{\&quot;id\&quot;:\&quot;fullname\&quot;,\&quot;type\&quot;:\&quot;string\&quot;},\&quot;avatarurl\&quot;:{\&quot;id\&quot;:\&quot;avatarurl\&quot;,\&quot;type\&quot;:\&quot;string\&quot;},\&quot;address\&quot;: {\&quot;id\&quot;: \&quot;address\&quot;,\&quot;type\&quot;: \&quot;object\&quot;,\&quot;properties\&quot;: {\&quot;rel\&quot;: {\&quot;id\&quot;: \&quot;rel\&quot;,\&quot;type\&quot;: \&quot;string\&quot;},\&quot;href\&quot;: {\&quot;id\&quot;: \&quot;href\&quot;,\&quot;type\&quot;: \&quot;string\&quot;}}}},\&quot;required\&quot;:[\&quot;id\&quot;,\&quot;firstname\&quot;,\&quot;lastname\&quot;,\&quot;email\&quot;,\&quot;emailVerified\&quot;,\&quot;createdOn\&quot;,\&quot;updatedOn\&quot;,\&quot;isActive\&quot;,\&quot;username\&quot;,\&quot;fullname\&quot;,\&quot;address\&quot;]}&quot;);
      
 
         
@@ -851,10 +851,10 @@ vars.put(&quot;userMod.lastname&quot;,lastname);
                 <intProp name="Assertion.test_type">2</intProp>
               </ResponseAssertion>
               <hashTree/>
-              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="extract idaddress" enabled="true">
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="extract adress id" enabled="true">
                 <stringProp name="RegexExtractor.useHeaders">false</stringProp>
                 <stringProp name="RegexExtractor.refname">_idAddress</stringProp>
-                <stringProp name="RegexExtractor.regex">idAddress&quot;:&quot;([0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})</stringProp>
+                <stringProp name="RegexExtractor.regex">&quot;rel&quot;:&quot;address&quot;,&quot;href&quot;:&quot;https?://[-a-zA-Z0-9+&amp;@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&amp;@#/%=~_|]([0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})&quot;</stringProp>
                 <stringProp name="RegexExtractor.template">$1</stringProp>
                 <stringProp name="RegexExtractor.default"></stringProp>
                 <stringProp name="RegexExtractor.match_number"></stringProp>
@@ -1563,6 +1563,80 @@ vars.put(&quot;data&quot;,mapper.writeValueAsString(data));</stringProp>
               <stringProp name="LoopController.loops">1</stringProp>
             </LoopController>
             <hashTree>
+              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="create studio" enabled="true">
+                <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+                <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+                  <collectionProp name="Arguments.arguments">
+                    <elementProp name="" elementType="HTTPArgument">
+                      <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                      <stringProp name="Argument.value">${studio}</stringProp>
+                      <stringProp name="Argument.metadata">=</stringProp>
+                    </elementProp>
+                  </collectionProp>
+                </elementProp>
+                <stringProp name="HTTPSampler.domain"></stringProp>
+                <stringProp name="HTTPSampler.port"></stringProp>
+                <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+                <stringProp name="HTTPSampler.response_timeout"></stringProp>
+                <stringProp name="HTTPSampler.protocol">http</stringProp>
+                <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
+                <stringProp name="HTTPSampler.path">/partners/me/studios</stringProp>
+                <stringProp name="HTTPSampler.method">POST</stringProp>
+                <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+                <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+                <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+                <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+                <boolProp name="HTTPSampler.monitor">false</boolProp>
+                <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+              </HTTPSamplerProxy>
+              <hashTree>
+                <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="Data" enabled="true">
+                  <stringProp name="filename"></stringProp>
+                  <stringProp name="parameters"></stringProp>
+                  <boolProp name="resetInterpreter">false</boolProp>
+                  <stringProp name="script">import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+ObjectMapper mapper = new ObjectMapper();
+Map data = new HashMap();
+Map dataAdr = new HashMap();
+
+data.put(&quot;name&quot;,&quot;Gym Strongman&quot;);
+data.put(&quot;description&quot;,&quot;${lorem.long}&quot;);
+dataAdr.put(&quot;street&quot;,&quot;Gesellschaftsstrasse 73&quot;);
+dataAdr.put(&quot;city&quot;,&quot;Bern&quot;);
+dataAdr.put(&quot;zip&quot;,&quot;3012&quot;);
+dataAdr.put(&quot;state&quot;,&quot;Bern&quot;);
+dataAdr.put(&quot;country&quot;,&quot;Switzerland&quot;);
+
+data.put(&quot;address&quot;,dataAdr);
+
+vars.put(&quot;studio&quot;,mapper.writeValueAsString(data));</stringProp>
+                </BeanShellPreProcessor>
+                <hashTree/>
+                <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+                  <collectionProp name="Asserion.test_strings">
+                    <stringProp name="49587">201</stringProp>
+                  </collectionProp>
+                  <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+                  <boolProp name="Assertion.assume_success">false</boolProp>
+                  <intProp name="Assertion.test_type">1</intProp>
+                </ResponseAssertion>
+                <hashTree/>
+                <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="extract id" enabled="true">
+                  <stringProp name="RegexExtractor.useHeaders">true</stringProp>
+                  <stringProp name="RegexExtractor.refname">_studioid</stringProp>
+                  <stringProp name="RegexExtractor.regex">Location:.*(([0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}))</stringProp>
+                  <stringProp name="RegexExtractor.template">$1</stringProp>
+                  <stringProp name="RegexExtractor.default"></stringProp>
+                  <stringProp name="RegexExtractor.match_number"></stringProp>
+                </RegexExtractor>
+                <hashTree/>
+              </hashTree>
               <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="create clazzdef (wrong form)" enabled="true">
                 <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
                 <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
@@ -1580,7 +1654,7 @@ vars.put(&quot;data&quot;,mapper.writeValueAsString(data));</stringProp>
                 <stringProp name="HTTPSampler.response_timeout"></stringProp>
                 <stringProp name="HTTPSampler.protocol">http</stringProp>
                 <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
-                <stringProp name="HTTPSampler.path">/partners/me/studio</stringProp>
+                <stringProp name="HTTPSampler.path">/partners/me/clazzdefs</stringProp>
                 <stringProp name="HTTPSampler.method">POST</stringProp>
                 <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                 <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -1651,80 +1725,6 @@ vars.put(&quot;studio&quot;,mapper.writeValueAsString(data));</stringProp>
                   <boolProp name="Assertion.assume_success">false</boolProp>
                   <intProp name="Assertion.test_type">1</intProp>
                 </ResponseAssertion>
-                <hashTree/>
-              </hashTree>
-              <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="create studio" enabled="true">
-                <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
-                <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
-                  <collectionProp name="Arguments.arguments">
-                    <elementProp name="" elementType="HTTPArgument">
-                      <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                      <stringProp name="Argument.value">${studio}</stringProp>
-                      <stringProp name="Argument.metadata">=</stringProp>
-                    </elementProp>
-                  </collectionProp>
-                </elementProp>
-                <stringProp name="HTTPSampler.domain"></stringProp>
-                <stringProp name="HTTPSampler.port"></stringProp>
-                <stringProp name="HTTPSampler.connect_timeout"></stringProp>
-                <stringProp name="HTTPSampler.response_timeout"></stringProp>
-                <stringProp name="HTTPSampler.protocol">http</stringProp>
-                <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
-                <stringProp name="HTTPSampler.path">/partners/me/studio</stringProp>
-                <stringProp name="HTTPSampler.method">POST</stringProp>
-                <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-                <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
-                <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-                <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
-                <boolProp name="HTTPSampler.monitor">false</boolProp>
-                <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
-              </HTTPSamplerProxy>
-              <hashTree>
-                <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="Data" enabled="true">
-                  <stringProp name="filename"></stringProp>
-                  <stringProp name="parameters"></stringProp>
-                  <boolProp name="resetInterpreter">false</boolProp>
-                  <stringProp name="script">import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-ObjectMapper mapper = new ObjectMapper();
-Map data = new HashMap();
-Map dataAdr = new HashMap();
-
-data.put(&quot;name&quot;,&quot;Gym Strongman&quot;);
-data.put(&quot;description&quot;,&quot;${lorem.long}&quot;);
-dataAdr.put(&quot;street&quot;,&quot;Gesellschaftsstrasse 73&quot;);
-dataAdr.put(&quot;city&quot;,&quot;Bern&quot;);
-dataAdr.put(&quot;zip&quot;,&quot;3012&quot;);
-dataAdr.put(&quot;state&quot;,&quot;Bern&quot;);
-dataAdr.put(&quot;country&quot;,&quot;Switzerland&quot;);
-
-data.put(&quot;address&quot;,dataAdr);
-
-vars.put(&quot;studio&quot;,mapper.writeValueAsString(data));</stringProp>
-                </BeanShellPreProcessor>
-                <hashTree/>
-                <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
-                  <collectionProp name="Asserion.test_strings">
-                    <stringProp name="49587">201</stringProp>
-                  </collectionProp>
-                  <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
-                  <boolProp name="Assertion.assume_success">false</boolProp>
-                  <intProp name="Assertion.test_type">1</intProp>
-                </ResponseAssertion>
-                <hashTree/>
-                <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="extract id" enabled="true">
-                  <stringProp name="RegexExtractor.useHeaders">true</stringProp>
-                  <stringProp name="RegexExtractor.refname">_studioid</stringProp>
-                  <stringProp name="RegexExtractor.regex">Location:.*(([0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}))</stringProp>
-                  <stringProp name="RegexExtractor.template">$1</stringProp>
-                  <stringProp name="RegexExtractor.default"></stringProp>
-                  <stringProp name="RegexExtractor.match_number"></stringProp>
-                </RegexExtractor>
                 <hashTree/>
               </hashTree>
               <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="upload image" enabled="true">
@@ -1799,7 +1799,7 @@ vars.put(&quot;studio&quot;,mapper.writeValueAsString(data));</stringProp>
                 <stringProp name="HTTPSampler.response_timeout"></stringProp>
                 <stringProp name="HTTPSampler.protocol">http</stringProp>
                 <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
-                <stringProp name="HTTPSampler.path">/partners/me/studio/clazzdefs</stringProp>
+                <stringProp name="HTTPSampler.path">/partners/me/clazzdefs</stringProp>
                 <stringProp name="HTTPSampler.method">POST</stringProp>
                 <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                 <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -1846,6 +1846,7 @@ userData.put(&quot;recurrence&quot;,&quot;weekly&quot;);
 userData.put(&quot;amount&quot;,&quot;10&quot;);
 userData.put(&quot;isActive&quot;,false);
 userData.put(&quot;avatarurl&quot;,&quot;http://localhost:9000${_imageid_g1}&quot;);
+userData.put(&quot;idStudio&quot;,&quot;${_studioid_g1}&quot;);
 
 vars.put(&quot;clazz&quot;,mapper.writeValueAsString(userData));
 vars.put(&quot;clazz.name&quot;,userData.get(&quot;name&quot;));
@@ -1888,7 +1889,7 @@ vars.put(&quot;clazz.amount&quot;,userData.get(&quot;amount&quot;));</stringProp
                 <stringProp name="HTTPSampler.response_timeout"></stringProp>
                 <stringProp name="HTTPSampler.protocol">http</stringProp>
                 <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
-                <stringProp name="HTTPSampler.path">/partners/me/studio/clazzdefs</stringProp>
+                <stringProp name="HTTPSampler.path">/partners/me/clazzdefs</stringProp>
                 <stringProp name="HTTPSampler.method">GET</stringProp>
                 <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                 <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -2067,7 +2068,7 @@ vars.put(&quot;clazz&quot;,mapper.writeValueAsString(userData));</stringProp>
                 <stringProp name="HTTPSampler.response_timeout"></stringProp>
                 <stringProp name="HTTPSampler.protocol">http</stringProp>
                 <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
-                <stringProp name="HTTPSampler.path">/partners/me/studio/clazzdefs</stringProp>
+                <stringProp name="HTTPSampler.path">/partners/me/clazzdefs</stringProp>
                 <stringProp name="HTTPSampler.method">POST</stringProp>
                 <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                 <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -2115,6 +2116,7 @@ userData.put(&quot;recurrence&quot;,&quot;weekly&quot;);
 userData.put(&quot;amount&quot;,&quot;10&quot;);
 userData.put(&quot;isActive&quot;,false);
 userData.put(&quot;avatarurl&quot;,&quot;http://localhost:9000${_imageid2_g1}&quot;);
+userData.put(&quot;idStudio&quot;,&quot;${_studioid_g1}&quot;);
 
 vars.put(&quot;clazz&quot;,mapper.writeValueAsString(userData));
 vars.put(&quot;clazz.name&quot;,userData.get(&quot;name&quot;));
@@ -2332,7 +2334,7 @@ vars.put(&quot;clazz&quot;,mapper.writeValueAsString(userData));</stringProp>
                 <stringProp name="HTTPSampler.response_timeout"></stringProp>
                 <stringProp name="HTTPSampler.protocol">http</stringProp>
                 <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
-                <stringProp name="HTTPSampler.path">/partners/me/studio/clazzdefs</stringProp>
+                <stringProp name="HTTPSampler.path">/partners/me/clazzdefs</stringProp>
                 <stringProp name="HTTPSampler.method">GET</stringProp>
                 <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                 <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -2452,7 +2454,7 @@ vars.put(&quot;clazz&quot;,mapper.writeValueAsString(userData));</stringProp>
                 <stringProp name="HTTPSampler.response_timeout"></stringProp>
                 <stringProp name="HTTPSampler.protocol">http</stringProp>
                 <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
-                <stringProp name="HTTPSampler.path">/partners/me/studio/clazzdefs</stringProp>
+                <stringProp name="HTTPSampler.path">/partners/me/clazzdefs</stringProp>
                 <stringProp name="HTTPSampler.method">POST</stringProp>
                 <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                 <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -2499,6 +2501,7 @@ userData.put(&quot;recurrence&quot;,&quot;weekly&quot;);
 userData.put(&quot;amount&quot;,&quot;10&quot;);
 userData.put(&quot;isActive&quot;,true);
 userData.put(&quot;avatarurl&quot;,&quot;http://localhost:9000${_imageid_g1}&quot;);
+userData.put(&quot;idStudio&quot;,&quot;${_studioid_g1}&quot;);
 
 vars.put(&quot;clazz&quot;,mapper.writeValueAsString(userData));
 vars.put(&quot;clazz.name&quot;,userData.get(&quot;name&quot;));
@@ -2541,7 +2544,7 @@ vars.put(&quot;clazz.amount&quot;,userData.get(&quot;amount&quot;));</stringProp
                 <stringProp name="HTTPSampler.response_timeout"></stringProp>
                 <stringProp name="HTTPSampler.protocol">http</stringProp>
                 <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
-                <stringProp name="HTTPSampler.path">/partners/me/studio/clazzdefs</stringProp>
+                <stringProp name="HTTPSampler.path">/partners/me/clazzdefs</stringProp>
                 <stringProp name="HTTPSampler.method">POST</stringProp>
                 <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
                 <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -2589,6 +2592,7 @@ userData.put(&quot;recurrence&quot;,&quot;weekly&quot;);
 userData.put(&quot;amount&quot;,&quot;10&quot;);
 userData.put(&quot;isActive&quot;,true);
 userData.put(&quot;avatarurl&quot;,&quot;http://localhost:9000${_imageid2_g1}&quot;);
+userData.put(&quot;idStudio&quot;,&quot;${_studioid_g1}&quot;);
 
 vars.put(&quot;clazz&quot;,mapper.writeValueAsString(userData));
 vars.put(&quot;clazz.name&quot;,userData.get(&quot;name&quot;));
@@ -3370,26 +3374,12 @@ vars.put(&quot;clazz.amount&quot;,userData.get(&quot;amount&quot;));</stringProp
               <hashTree/>
             </hashTree>
           </hashTree>
-          <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="User Registration" enabled="false">
+          <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Open Resources" enabled="true">
             <boolProp name="LoopController.continue_forever">true</boolProp>
             <stringProp name="LoopController.loops">1</stringProp>
           </LoopController>
           <hashTree>
-            <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
-              <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
-                <collectionProp name="Arguments.arguments"/>
-              </elementProp>
-              <stringProp name="HTTPSampler.domain"></stringProp>
-              <stringProp name="HTTPSampler.port">9001</stringProp>
-              <stringProp name="HTTPSampler.connect_timeout"></stringProp>
-              <stringProp name="HTTPSampler.response_timeout"></stringProp>
-              <stringProp name="HTTPSampler.protocol"></stringProp>
-              <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-              <stringProp name="HTTPSampler.path"></stringProp>
-              <stringProp name="HTTPSampler.concurrentPool">4</stringProp>
-            </ConfigTestElement>
-            <hashTree/>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="count" enabled="true">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="get studio" enabled="true">
               <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
               <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
                 <collectionProp name="Arguments.arguments">
@@ -3406,7 +3396,7 @@ vars.put(&quot;clazz.amount&quot;,userData.get(&quot;amount&quot;));</stringProp
               <stringProp name="HTTPSampler.response_timeout"></stringProp>
               <stringProp name="HTTPSampler.protocol">http</stringProp>
               <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
-              <stringProp name="HTTPSampler.path">/trainees/me/registrationsCount</stringProp>
+              <stringProp name="HTTPSampler.path">/studios/adfe8281-3300-4177-bd58-c563dbb8b915</stringProp>
               <stringProp name="HTTPSampler.method">GET</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -3416,31 +3406,6 @@ vars.put(&quot;clazz.amount&quot;,userData.get(&quot;amount&quot;));</stringProp
               <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
             </HTTPSamplerProxy>
             <hashTree>
-              <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
-                <collectionProp name="HeaderManager.headers">
-                  <elementProp name="Accept-Language" elementType="Header">
-                    <stringProp name="Header.name">Accept-Language</stringProp>
-                    <stringProp name="Header.value">de-DE,de;q=0.8,en-US;q=0.6,en;q=0.4</stringProp>
-                  </elementProp>
-                  <elementProp name="Accept" elementType="Header">
-                    <stringProp name="Header.name">Accept</stringProp>
-                    <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
-                  </elementProp>
-                  <elementProp name="Content-Type" elementType="Header">
-                    <stringProp name="Header.name">Content-Type</stringProp>
-                    <stringProp name="Header.value">application/json; charset=UTF-8</stringProp>
-                  </elementProp>
-                  <elementProp name="Accept-Encoding" elementType="Header">
-                    <stringProp name="Header.name">Accept-Encoding</stringProp>
-                    <stringProp name="Header.value">gzip, deflate</stringProp>
-                  </elementProp>
-                  <elementProp name="User-Agent" elementType="Header">
-                    <stringProp name="Header.name">User-Agent</stringProp>
-                    <stringProp name="Header.value">Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36</stringProp>
-                  </elementProp>
-                </collectionProp>
-              </HeaderManager>
-              <hashTree/>
               <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
                 <collectionProp name="Asserion.test_strings">
                   <stringProp name="49586">200</stringProp>
@@ -3450,107 +3415,26 @@ vars.put(&quot;clazz.amount&quot;,userData.get(&quot;amount&quot;));</stringProp
                 <intProp name="Assertion.test_type">1</intProp>
               </ResponseAssertion>
               <hashTree/>
-              <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
-                <collectionProp name="Asserion.test_strings">
-                  <stringProp name="48">0</stringProp>
-                </collectionProp>
-                <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
-                <boolProp name="Assertion.assume_success">false</boolProp>
-                <intProp name="Assertion.test_type">2</intProp>
-              </ResponseAssertion>
-              <hashTree/>
-            </hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="register" enabled="true">
-              <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
-              <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
-                <collectionProp name="Arguments.arguments">
-                  <elementProp name="" elementType="HTTPArgument">
-                    <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                    <stringProp name="Argument.value">${address}</stringProp>
-                    <stringProp name="Argument.metadata">=</stringProp>
-                  </elementProp>
-                </collectionProp>
-              </elementProp>
-              <stringProp name="HTTPSampler.domain"></stringProp>
-              <stringProp name="HTTPSampler.port"></stringProp>
-              <stringProp name="HTTPSampler.connect_timeout"></stringProp>
-              <stringProp name="HTTPSampler.response_timeout"></stringProp>
-              <stringProp name="HTTPSampler.protocol">http</stringProp>
-              <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
-              <stringProp name="HTTPSampler.path">/trainees/me/registrations</stringProp>
-              <stringProp name="HTTPSampler.method">POST</stringProp>
-              <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-              <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
-              <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-              <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
-              <boolProp name="HTTPSampler.monitor">false</boolProp>
-              <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
-            </HTTPSamplerProxy>
-            <hashTree>
-              <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="Data" enabled="true">
-                <stringProp name="filename"></stringProp>
-                <stringProp name="parameters"></stringProp>
-                <boolProp name="resetInterpreter">false</boolProp>
-                <stringProp name="script">import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-ObjectMapper mapper = new ObjectMapper();
-Map data = new HashMap();
-
-data.put(&quot;idClazz&quot;,&quot;1234&quot;);
-
-vars.put(&quot;registration&quot;,mapper.writeValueAsString(data));</stringProp>
-              </BeanShellPreProcessor>
-              <hashTree/>
-              <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
-                <collectionProp name="HeaderManager.headers">
-                  <elementProp name="Accept-Language" elementType="Header">
-                    <stringProp name="Header.name">Accept-Language</stringProp>
-                    <stringProp name="Header.value">de-DE,de;q=0.8,en-US;q=0.6,en;q=0.4</stringProp>
-                  </elementProp>
-                  <elementProp name="Accept" elementType="Header">
-                    <stringProp name="Header.name">Accept</stringProp>
-                    <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
-                  </elementProp>
-                  <elementProp name="Content-Type" elementType="Header">
-                    <stringProp name="Header.name">Content-Type</stringProp>
-                    <stringProp name="Header.value">application/json; charset=UTF-8</stringProp>
-                  </elementProp>
-                  <elementProp name="Accept-Encoding" elementType="Header">
-                    <stringProp name="Header.name">Accept-Encoding</stringProp>
-                    <stringProp name="Header.value">gzip, deflate</stringProp>
-                  </elementProp>
-                  <elementProp name="User-Agent" elementType="Header">
-                    <stringProp name="Header.name">User-Agent</stringProp>
-                    <stringProp name="Header.value">Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36</stringProp>
-                  </elementProp>
-                </collectionProp>
-              </HeaderManager>
-              <hashTree/>
-              <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
-                <collectionProp name="Asserion.test_strings">
-                  <stringProp name="49587">201</stringProp>
-                </collectionProp>
-                <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
-                <boolProp name="Assertion.assume_success">false</boolProp>
-                <intProp name="Assertion.test_type">1</intProp>
-              </ResponseAssertion>
-              <hashTree/>
-              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="extract id" enabled="true">
-                <stringProp name="RegexExtractor.useHeaders">true</stringProp>
-                <stringProp name="RegexExtractor.refname">_id</stringProp>
-                <stringProp name="RegexExtractor.regex">Location:\s*(.+)</stringProp>
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="extract partner link" enabled="true">
+                <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+                <stringProp name="RegexExtractor.refname">_partnerlink</stringProp>
+                <stringProp name="RegexExtractor.regex">&quot;rel&quot;:&quot;partner&quot;,&quot;href&quot;:&quot;((https?|ftp|file)://[-a-zA-Z0-9+&amp;@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&amp;@#/%=~_|])&quot;</stringProp>
                 <stringProp name="RegexExtractor.template">$1</stringProp>
                 <stringProp name="RegexExtractor.default"></stringProp>
-                <stringProp name="RegexExtractor.match_number"></stringProp>
+                <stringProp name="RegexExtractor.match_number">1</stringProp>
+              </RegexExtractor>
+              <hashTree/>
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="extract address id" enabled="true">
+                <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+                <stringProp name="RegexExtractor.refname">_addresslink</stringProp>
+                <stringProp name="RegexExtractor.regex">&quot;rel&quot;:&quot;address&quot;,&quot;href&quot;:&quot;((https?|ftp|file)://[-a-zA-Z0-9+&amp;@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&amp;@#/%=~_|])&quot;</stringProp>
+                <stringProp name="RegexExtractor.template">$1</stringProp>
+                <stringProp name="RegexExtractor.default"></stringProp>
+                <stringProp name="RegexExtractor.match_number">1</stringProp>
               </RegexExtractor>
               <hashTree/>
             </hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="count" enabled="true">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="get studio address" enabled="true">
               <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
               <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
                 <collectionProp name="Arguments.arguments">
@@ -3565,9 +3449,9 @@ vars.put(&quot;registration&quot;,mapper.writeValueAsString(data));</stringProp>
               <stringProp name="HTTPSampler.port"></stringProp>
               <stringProp name="HTTPSampler.connect_timeout"></stringProp>
               <stringProp name="HTTPSampler.response_timeout"></stringProp>
-              <stringProp name="HTTPSampler.protocol">http</stringProp>
+              <stringProp name="HTTPSampler.protocol"></stringProp>
               <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
-              <stringProp name="HTTPSampler.path">/trainees/me/registrationsCount</stringProp>
+              <stringProp name="HTTPSampler.path">${_addresslink_g1}</stringProp>
               <stringProp name="HTTPSampler.method">GET</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -3577,31 +3461,6 @@ vars.put(&quot;registration&quot;,mapper.writeValueAsString(data));</stringProp>
               <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
             </HTTPSamplerProxy>
             <hashTree>
-              <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
-                <collectionProp name="HeaderManager.headers">
-                  <elementProp name="Accept-Language" elementType="Header">
-                    <stringProp name="Header.name">Accept-Language</stringProp>
-                    <stringProp name="Header.value">de-DE,de;q=0.8,en-US;q=0.6,en;q=0.4</stringProp>
-                  </elementProp>
-                  <elementProp name="Accept" elementType="Header">
-                    <stringProp name="Header.name">Accept</stringProp>
-                    <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
-                  </elementProp>
-                  <elementProp name="Content-Type" elementType="Header">
-                    <stringProp name="Header.name">Content-Type</stringProp>
-                    <stringProp name="Header.value">application/json; charset=UTF-8</stringProp>
-                  </elementProp>
-                  <elementProp name="Accept-Encoding" elementType="Header">
-                    <stringProp name="Header.name">Accept-Encoding</stringProp>
-                    <stringProp name="Header.value">gzip, deflate</stringProp>
-                  </elementProp>
-                  <elementProp name="User-Agent" elementType="Header">
-                    <stringProp name="Header.name">User-Agent</stringProp>
-                    <stringProp name="Header.value">Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36</stringProp>
-                  </elementProp>
-                </collectionProp>
-              </HeaderManager>
-              <hashTree/>
               <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
                 <collectionProp name="Asserion.test_strings">
                   <stringProp name="49586">200</stringProp>
@@ -3611,17 +3470,8 @@ vars.put(&quot;registration&quot;,mapper.writeValueAsString(data));</stringProp>
                 <intProp name="Assertion.test_type">1</intProp>
               </ResponseAssertion>
               <hashTree/>
-              <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
-                <collectionProp name="Asserion.test_strings">
-                  <stringProp name="48">0</stringProp>
-                </collectionProp>
-                <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
-                <boolProp name="Assertion.assume_success">false</boolProp>
-                <intProp name="Assertion.test_type">2</intProp>
-              </ResponseAssertion>
-              <hashTree/>
             </hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="unregister" enabled="true">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="get studio partner" enabled="true">
               <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
               <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
                 <collectionProp name="Arguments.arguments">
@@ -3636,10 +3486,10 @@ vars.put(&quot;registration&quot;,mapper.writeValueAsString(data));</stringProp>
               <stringProp name="HTTPSampler.port"></stringProp>
               <stringProp name="HTTPSampler.connect_timeout"></stringProp>
               <stringProp name="HTTPSampler.response_timeout"></stringProp>
-              <stringProp name="HTTPSampler.protocol">http</stringProp>
+              <stringProp name="HTTPSampler.protocol"></stringProp>
               <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
-              <stringProp name="HTTPSampler.path">${_id_g1}</stringProp>
-              <stringProp name="HTTPSampler.method">DELETE</stringProp>
+              <stringProp name="HTTPSampler.path">${_partnerlink_g1}</stringProp>
+              <stringProp name="HTTPSampler.method">GET</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
               <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
@@ -3648,31 +3498,6 @@ vars.put(&quot;registration&quot;,mapper.writeValueAsString(data));</stringProp>
               <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
             </HTTPSamplerProxy>
             <hashTree>
-              <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
-                <collectionProp name="HeaderManager.headers">
-                  <elementProp name="Accept-Language" elementType="Header">
-                    <stringProp name="Header.name">Accept-Language</stringProp>
-                    <stringProp name="Header.value">de-DE,de;q=0.8,en-US;q=0.6,en;q=0.4</stringProp>
-                  </elementProp>
-                  <elementProp name="Accept" elementType="Header">
-                    <stringProp name="Header.name">Accept</stringProp>
-                    <stringProp name="Header.value">application/json, text/plain, */*</stringProp>
-                  </elementProp>
-                  <elementProp name="Content-Type" elementType="Header">
-                    <stringProp name="Header.name">Content-Type</stringProp>
-                    <stringProp name="Header.value">application/json; charset=UTF-8</stringProp>
-                  </elementProp>
-                  <elementProp name="Accept-Encoding" elementType="Header">
-                    <stringProp name="Header.name">Accept-Encoding</stringProp>
-                    <stringProp name="Header.value">gzip, deflate</stringProp>
-                  </elementProp>
-                  <elementProp name="User-Agent" elementType="Header">
-                    <stringProp name="Header.name">User-Agent</stringProp>
-                    <stringProp name="Header.value">Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36</stringProp>
-                  </elementProp>
-                </collectionProp>
-              </HeaderManager>
-              <hashTree/>
               <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
                 <collectionProp name="Asserion.test_strings">
                   <stringProp name="49586">200</stringProp>
@@ -3683,13 +3508,6 @@ vars.put(&quot;registration&quot;,mapper.writeValueAsString(data));</stringProp>
               </ResponseAssertion>
               <hashTree/>
             </hashTree>
-            <DebugPostProcessor guiclass="TestBeanGUI" testclass="DebugPostProcessor" testname="Debug PostProcessor" enabled="true">
-              <boolProp name="displayJMeterProperties">false</boolProp>
-              <boolProp name="displayJMeterVariables">true</boolProp>
-              <boolProp name="displaySamplerProperties">true</boolProp>
-              <boolProp name="displaySystemProperties">false</boolProp>
-            </DebugPostProcessor>
-            <hashTree/>
             <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
               <boolProp name="ResultCollector.error_logging">false</boolProp>
               <objProp>
@@ -7000,135 +6818,6 @@ vars.put(&quot;data&quot;,mapper.writeValueAsString(data));</stringProp>
               <boolProp name="displaySystemProperties">false</boolProp>
             </DebugPostProcessor>
             <hashTree/>
-            <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
-              <boolProp name="ResultCollector.error_logging">false</boolProp>
-              <objProp>
-                <name>saveConfig</name>
-                <value class="SampleSaveConfiguration">
-                  <time>true</time>
-                  <latency>true</latency>
-                  <timestamp>true</timestamp>
-                  <success>true</success>
-                  <label>true</label>
-                  <code>true</code>
-                  <message>true</message>
-                  <threadName>true</threadName>
-                  <dataType>true</dataType>
-                  <encoding>false</encoding>
-                  <assertions>true</assertions>
-                  <subresults>true</subresults>
-                  <responseData>false</responseData>
-                  <samplerData>false</samplerData>
-                  <xml>false</xml>
-                  <fieldNames>false</fieldNames>
-                  <responseHeaders>false</responseHeaders>
-                  <requestHeaders>false</requestHeaders>
-                  <responseDataOnError>false</responseDataOnError>
-                  <saveAssertionResultsFailureMessage>false</saveAssertionResultsFailureMessage>
-                  <assertionsResultsToSave>0</assertionsResultsToSave>
-                  <bytes>true</bytes>
-                  <threadCounts>true</threadCounts>
-                </value>
-              </objProp>
-              <stringProp name="filename"></stringProp>
-            </ResultCollector>
-            <hashTree/>
-            <ResultCollector guiclass="AssertionVisualizer" testclass="ResultCollector" testname="Assertion Results" enabled="true">
-              <boolProp name="ResultCollector.error_logging">false</boolProp>
-              <objProp>
-                <name>saveConfig</name>
-                <value class="SampleSaveConfiguration">
-                  <time>true</time>
-                  <latency>true</latency>
-                  <timestamp>true</timestamp>
-                  <success>true</success>
-                  <label>true</label>
-                  <code>true</code>
-                  <message>true</message>
-                  <threadName>true</threadName>
-                  <dataType>true</dataType>
-                  <encoding>false</encoding>
-                  <assertions>true</assertions>
-                  <subresults>true</subresults>
-                  <responseData>false</responseData>
-                  <samplerData>false</samplerData>
-                  <xml>false</xml>
-                  <fieldNames>false</fieldNames>
-                  <responseHeaders>false</responseHeaders>
-                  <requestHeaders>false</requestHeaders>
-                  <responseDataOnError>false</responseDataOnError>
-                  <saveAssertionResultsFailureMessage>false</saveAssertionResultsFailureMessage>
-                  <assertionsResultsToSave>0</assertionsResultsToSave>
-                  <bytes>true</bytes>
-                  <threadCounts>true</threadCounts>
-                </value>
-              </objProp>
-              <stringProp name="filename"></stringProp>
-            </ResultCollector>
-            <hashTree/>
-          </hashTree>
-          <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Open Resources" enabled="true">
-            <boolProp name="LoopController.continue_forever">true</boolProp>
-            <stringProp name="LoopController.loops">1</stringProp>
-          </LoopController>
-          <hashTree>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="get studio" enabled="true">
-              <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
-              <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
-                <collectionProp name="Arguments.arguments">
-                  <elementProp name="" elementType="HTTPArgument">
-                    <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                    <stringProp name="Argument.value"></stringProp>
-                    <stringProp name="Argument.metadata">=</stringProp>
-                  </elementProp>
-                </collectionProp>
-              </elementProp>
-              <stringProp name="HTTPSampler.domain"></stringProp>
-              <stringProp name="HTTPSampler.port"></stringProp>
-              <stringProp name="HTTPSampler.connect_timeout"></stringProp>
-              <stringProp name="HTTPSampler.response_timeout"></stringProp>
-              <stringProp name="HTTPSampler.protocol">http</stringProp>
-              <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
-              <stringProp name="HTTPSampler.path">/studios/${_studioid_g1}</stringProp>
-              <stringProp name="HTTPSampler.method">GET</stringProp>
-              <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-              <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
-              <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-              <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
-              <boolProp name="HTTPSampler.monitor">false</boolProp>
-              <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
-            </HTTPSamplerProxy>
-            <hashTree>
-              <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
-                <collectionProp name="Asserion.test_strings">
-                  <stringProp name="49586">200</stringProp>
-                </collectionProp>
-                <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
-                <boolProp name="Assertion.assume_success">false</boolProp>
-                <intProp name="Assertion.test_type">1</intProp>
-              </ResponseAssertion>
-              <hashTree/>
-              <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
-                <collectionProp name="Asserion.test_strings">
-                  <stringProp name="-803609111">page&quot;:0</stringProp>
-                  <stringProp name="-1960741531">offset&quot;:0</stringProp>
-                  <stringProp name="-763465337">total&quot;:\d+</stringProp>
-                </collectionProp>
-                <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
-                <boolProp name="Assertion.assume_success">false</boolProp>
-                <intProp name="Assertion.test_type">2</intProp>
-              </ResponseAssertion>
-              <hashTree/>
-              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="extract id" enabled="true">
-                <stringProp name="RegexExtractor.useHeaders">false</stringProp>
-                <stringProp name="RegexExtractor.refname">_clazzid</stringProp>
-                <stringProp name="RegexExtractor.regex">&quot;id&quot;:&quot;([0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})</stringProp>
-                <stringProp name="RegexExtractor.template">$1</stringProp>
-                <stringProp name="RegexExtractor.default"></stringProp>
-                <stringProp name="RegexExtractor.match_number">1</stringProp>
-              </RegexExtractor>
-              <hashTree/>
-            </hashTree>
             <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
               <boolProp name="ResultCollector.error_logging">false</boolProp>
               <objProp>

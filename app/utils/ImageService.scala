@@ -2,11 +2,13 @@ package utils
 
 import java.util
 import java.util.UUID
+import javax.inject.Inject
 
 import com.cloudinary.{Transformation, Cloudinary}
 import com.cloudinary.utils.ObjectUtils
 import com.google.inject.ImplementedBy
 import play.Play
+import play.api.Configuration
 import play.api.Play.current
 import play.api.libs.concurrent.Akka
 import play.api.libs.concurrent.Execution.Implicits._
@@ -21,11 +23,11 @@ trait ImageService {
   def deleteImage(id: UUID): Unit
 }
 
-class ImageServiceCloudinary extends ImageService {
+class ImageServiceCloudinary @Inject() (conf: Configuration) extends ImageService {
 
-  lazy val name = Play.application().configuration().getString("cloudinary.name")
-  lazy val key = Play.application().configuration().getString("cloudinary.key")
-  lazy val secret = Play.application().configuration().getString("cloudinary.secret")
+  lazy val name = conf.getString("cloudinary.name").getOrElse("CL_NAME")
+  lazy val key = conf.getString("cloudinary.key").getOrElse("NONE")
+  lazy val secret = conf.getString("cloudinary.secret").getOrElse("NONE")
 
   def createAsync(path: String, id: UUID, tags: String) = {
     Akka.system.scheduler.scheduleOnce(100 milliseconds) {

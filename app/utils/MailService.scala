@@ -4,7 +4,7 @@ import javax.inject.Inject
 import com.google.inject.ImplementedBy
 import com.sendgrid._
 import play.Play
-import play.api.Logger
+import play.api.{Configuration, Logger}
 import play.api.Play.current
 import play.api.libs.concurrent.Akka
 import play.api.libs.concurrent.Execution.Implicits._
@@ -17,9 +17,9 @@ trait MailService {
   def sendEmail(recipients: String*)(subject: String, bodyHtml: String, bodyText: String): Unit
 }
 
-class MailServiceDefault @Inject() (mailerClient: MailerClient) extends MailService {
+class MailServiceDefault @Inject() (mailerClient: MailerClient, conf: Configuration) extends MailService {
 
-  lazy val from = Play.application().configuration().getString("play.mailer.from")
+  lazy val from = conf.getString("play.mailer.from").getOrElse("FROM_DEFAULT")
 
   def sendEmailAsync(recipients: String*)(subject: String, bodyHtml: String, bodyText: String) = {
     Akka.system.scheduler.scheduleOnce(100 milliseconds) {
@@ -30,11 +30,11 @@ class MailServiceDefault @Inject() (mailerClient: MailerClient) extends MailServ
     mailerClient.send(Email(subject, from, recipients, Some(bodyText), Some(bodyHtml)))
 }
 
-class MailServiceSendgrid extends MailService {
+class MailServiceSendgrid @Inject() (conf: Configuration)  extends MailService {
 
-  lazy val from = Play.application().configuration().getString("sendgrid.from")
-  lazy val sgKey = Play.application().configuration().getString("sendgrid.key")
-  lazy val mock: Boolean = Play.application().configuration().getString("sendgrid.mock").toBoolean
+  lazy val from = conf.getString("sendgrid.from").getOrElse("FROM_DEFAULT")
+  lazy val sgKey = conf.getString("sendgrid.key").getOrElse("NONE")
+  lazy val mock: Boolean = conf.getBoolean("sendgrid.mock").getOrElse(true)
 
   def sendEmailAsync(recipients: String*)(subject: String, bodyHtml: String, bodyText: String) = {
     Akka.system.scheduler.scheduleOnce(100 milliseconds) {

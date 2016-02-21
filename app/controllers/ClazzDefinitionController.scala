@@ -38,8 +38,10 @@ class ClazzDefinitionController @Inject()(
 
   import utils.FormValidator.ClazzDef._
 
-  def create = SecuredAction.async(parse.json) { implicit request =>
-    // add server side ids to the request JSON (logged in user, the id)
+  def create  = SecuredAction.async(parse.json) { implicit request =>
+    // import the ClazzDefeinition CREATE specific Validator,
+    // we must have an idStudio for CREATE (but only for CREATE)
+    import utils.FormValidator.ClazzDefCreate._
     validateUpsert(None, service.create)
   }
 
@@ -64,6 +66,7 @@ class ClazzDefinitionController @Inject()(
         val requestEnrichment = List(("id", id.toString), ("idPartner", request.identity.id.get.toString))
         validateUpsert(Some(requestEnrichment), service.update)
       }
+      case _ => Future.successful(r)
     })
   }
 
@@ -73,6 +76,7 @@ class ClazzDefinitionController @Inject()(
     // will be returned
     retrieveByOwner(id, request.identity.id.get, service.retrieveByOwner).flatMap ( r => r match {
       case Result(h,_,_) if h.status == play.api.http.Status.OK => deleteById(id, service.delete)
+      case _ => Future.successful(r)
     })
   }
 
